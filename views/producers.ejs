@@ -15,10 +15,10 @@
     <header>
       <nav class="navbar">
         <div class="logo">
-          <h1><a href="index.html">Logo</a></h1>
+          <h1><a href="/">Logo</a></h1>
         </div>
         <ul class="nav-links">
-          <li><a href="producers.html" class="active">Explorar</a></li>
+          <li><a href="/producers" class="active">Explorar</a></li>
           <li><a href="#">Sobre</a></li>
           <li><a href="#">Contato</a></li>
         </ul>
@@ -27,7 +27,11 @@
           <a href="#" id="decrease-font"><i class="fas fa-minus"></i></a>
           <a href="#" id="toggle-style"><i class="fas fa-sync-alt"></i></a>
           <a href="#"><i class="fas fa-shopping-cart"></i></a>
-          <a href="#"><i class="fas fa-user"></i></a>
+          <% if (!user) { %>
+            <a href="/login"><i class="fas fa-user"></i></a>
+          <% } else { %>
+            <a href="/logout"><i class="fas fa-sign-out-alt"></i></a>
+          <% } %>
         </div>
       </nav>
     </header>
@@ -48,10 +52,7 @@
             <tr>
               <td>1</td>
               <td>João Silva</td>
-              <td>
-                Produtor de alimentos orgânicos com mais de 20 anos de
-                experiência.
-              </td>
+              <td>Produtor de alimentos orgânicos com mais de 20 anos de experiência.</td>
               <td>R$ 100.000</td>
               <td>Alface, Tomate, Cenoura</td>
             </tr>

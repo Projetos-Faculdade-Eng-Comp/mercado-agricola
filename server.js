@@ -28,8 +28,8 @@ app.use(
 app.get("/signUp", (req, res) => {
   const successMsg = req.session.successMsg || null;
   const errorMsg = req.session.errorMsg || null;
-  req.session.successMsg = null; // Limpa a mensagem de sucesso após a exibição
-  req.session.errorMsg = null; // Limpa a mensagem de erro após a exibição
+  req.session.successMsg = null;
+  req.session.errorMsg = null;
   res.render("signUp", { successMsg, errorMsg });
 });
 
@@ -43,18 +43,18 @@ app.post("/signUp", (req, res) => {
     return res.redirect("/signUp");
   }
 
-  // Lê o arquivo data/usuarios.json
+  // Lê o arquivo data/users.json
   fs.readFile("data/users.json", "utf8", (err, data) => {
     if (err) {
       if (err.code === "ENOENT") {
         // Se o arquivo não existir, cria um novo array
-        let usuarios = [];
-        usuarios.push({ primeiroNome, ultimoNome, email, senha, perfil });
+        let users = [];
+        users.push({ primeiroNome, ultimoNome, email, senha, perfil });
 
-        // Salva o arquivo data/usuarios.json
+        // Salva o arquivo data/users.json
         fs.writeFile(
           "data/users.json",
-          JSON.stringify(usuarios, null, 2),
+          JSON.stringify(users, null, 2),
           (err) => {
             if (err) throw err;
             req.session.successMsg = "Cadastro realizado com sucesso!";
@@ -65,21 +65,17 @@ app.post("/signUp", (req, res) => {
         throw err;
       }
     } else {
-      let usuarios = JSON.parse(data);
+      let users = JSON.parse(data);
 
       // Adiciona novo usuário
-      usuarios.push({ primeiroNome, ultimoNome, email, senha, perfil });
+      users.push({ primeiroNome, ultimoNome, email, senha, perfil });
 
-      // Salva o arquivo data/usuarios.json
-      fs.writeFile(
-        "data/users.json",
-        JSON.stringify(usuarios, null, 2),
-        (err) => {
-          if (err) throw err;
-          req.session.successMsg = "Cadastro realizado com sucesso!";
-          res.redirect("/signUp");
-        }
-      );
+      // Salva o arquivo data/users.json
+      fs.writeFile("data/users.json", JSON.stringify(users, null, 2), (err) => {
+        if (err) throw err;
+        req.session.successMsg = "Cadastro realizado com sucesso!";
+        res.redirect("/signUp");
+      });
     }
   });
 });
@@ -87,7 +83,7 @@ app.post("/signUp", (req, res) => {
 // Rota para exibir a página de login
 app.get("/login", (req, res) => {
   const errorMsg = req.session.errorMsg || null;
-  req.session.errorMsg = null; // Limpa a mensagem de erro após a exibição
+  req.session.errorMsg = null;
   res.render("login", { errorMsg });
 });
 
@@ -95,17 +91,18 @@ app.get("/login", (req, res) => {
 app.post("/login", (req, res) => {
   const { email, senha } = req.body;
 
-  // Lê o arquivo data/usuarios.json
+  // Lê o arquivo data/users.json
   fs.readFile("data/users.json", "utf8", (err, data) => {
     if (err) throw err;
 
-    let usuarios = JSON.parse(data);
-    let usuario = usuarios.find(
+    let users = JSON.parse(data);
+    let user = users.find(
       (user) => user.email === email && user.senha === senha
     );
 
-    if (usuario) {
-      res.send("Login realizado com sucesso!");
+    if (user) {
+      req.session.user = user;
+      res.redirect("/");
     } else {
       req.session.errorMsg = "E-mail ou senha incorretos. Tente novamente.";
       res.redirect("/login");
@@ -115,17 +112,26 @@ app.post("/login", (req, res) => {
 
 // Rota para a página inicial (index)
 app.get("/", (req, res) => {
-  res.render("index");
+  const user = req.session.user || null;
+  res.render("index", { user });
 });
 
 // Rota para a página de produtores
 app.get("/producers", (req, res) => {
-  res.render("producers");
+  const user = req.session.user || null;
+  res.render("producers", { user });
 });
 
 // Rota para a página de produtos
 app.get("/products", (req, res) => {
-  res.render("products");
+  const user = req.session.user || null;
+  res.render("products", { user });
+});
+
+// Rota para logout
+app.get("/logout", (req, res) => {
+  req.session.destroy(); // Destruir a sessão
+  res.redirect("/login");
 });
 
 // Inicializa o servidor

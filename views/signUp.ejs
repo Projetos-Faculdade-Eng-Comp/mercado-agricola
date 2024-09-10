@@ -12,10 +12,10 @@
 
             if (senha !== confirmSenha) {
                 alert('As senhas não coincidem.');
-                return false; // Impede o envio do formulário
+                return false;
             }
 
-            return true; // Permite o envio do formulário
+            return true;
         }
     </script>
 </head>
@@ -23,7 +23,6 @@
     <div class="form-container">
         <h1>Cadastre-se</h1>
         <form action="/signUp" method="post" onsubmit="return validarFormulario()">
-            <!-- Botões radiais para perfil -->
             <fieldset class="radio-group">
                 <label>
                     <input type="radio" name="perfil" value="produtor" required>
