@@ -25,6 +25,7 @@ document.addEventListener("DOMContentLoaded", () => {
       "24px",
     ".products-section .products-content .products-view .product-card p":
       "20px",
+    ".footer p": "16px",
   };
 
   function initializeLocalStorage() {

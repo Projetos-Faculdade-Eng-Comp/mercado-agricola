@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro</title>
+    <link rel="stylesheet" href="css/signUp.css">
+    <script>
+        function validarFormulario() {
+            var senha = document.getElementById('senha').value;
+            var confirmSenha = document.getElementById('confirmSenha').value;
+
+            if (senha !== confirmSenha) {
+                alert('As senhas não coincidem.');
+                return false; // Impede o envio do formulário
+            }
+
+            return true; // Permite o envio do formulário
+        }
+    </script>
+</head>
+<body>
+    <div class="form-container">
+        <h1>Cadastre-se</h1>
+        <form action="/signUp" method="post" onsubmit="return validarFormulario()">
+            <!-- Botões radiais para perfil -->
+            <fieldset class="radio-group">
+                <label>
+                    <input type="radio" name="perfil" value="produtor" required>
+                    Produtor
+                </label>
+                <label>
+                    <input type="radio" name="perfil" value="comprador" required>
+                    Comprador
+                </label>
+            </fieldset>
+            
+            <label for="primeiroNome">Primeiro Nome:</label>
+            <input type="text" id="primeiroNome" name="primeiroNome" required>
+            
+            <label for="ultimoNome">Último Nome:</label>
+            <input type="text" id="ultimoNome" name="ultimoNome" required>
+            
+            <label for="email">E-mail:</label>
+            <input type="email" id="email" name="email" required>
+            
+            <label for="senha">Senha:</label>
+            <input type="password" id="senha" name="senha" required>
+            
+            <label for="confirmSenha">Confirmar Senha:</label>
+            <input type="password" id="confirmSenha" name="confirmSenha" required>
+            
+            <div class="form-buttons">
+                <a href="/login" class="text-link">Voltar</a>
+                <button type="submit" class="btn-submit">Enviar</button>
+            </div>
+        </form>
+        <% if (successMsg) { %>
+            <div id="success-msg" class="success-msg">
+                <%= successMsg %>
+            </div>
+        <% } %>
+    </div>
+</body>
+</html>

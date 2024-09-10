@@ -1,0 +1,72 @@
+/* public/styles/login.css */
+
+body {
+    background-color: #d4edda; /* Fundo verde claro */
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+}
+
+.form-container {
+    max-width: 400px; /* Largura do formulário */
+    margin: 50px auto; /* Centraliza o formulário na tela */
+    padding: 20px; /* Espaçamento interno do formulário */
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #fff;
+}
+
+h1 {
+    text-align: center;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px; /* Margem abaixo das labels */
+    font-weight: bold;
+}
+
+input {
+    display: block;
+    width: calc(100% - 20px); /* Ajusta a largura para incluir padding interno */
+    padding: 10px; /* Espaçamento interno dos campos */
+    margin-bottom: 15px; /* Margem abaixo dos campos */
+    border-radius: 4px;
+    border: 1px solid #ddd;
+}
+
+.form-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.btn-login {
+    background-color: #d4edda; /* Verde claro */
+    color: #333;
+    border: none;
+    padding: 10px;
+    border-radius: 4px;
+    font-weight: bold;
+    width: 48%;
+    text-align: center;
+}
+
+.btn-login:hover {
+    background-color: #c3e6cb;
+}
+
+.text-link {
+    background-color: transparent; /* Remove a cor de fundo do texto */
+    color: #6c757d; /* Cor cinza para o texto "Cadastre-se" */
+    cursor: pointer; /* Cursor para indicar que é clicável */
+    text-decoration: none; /* Remove sublinhado do link */
+    width: 48%;
+    display: inline-block;
+    text-align: center;
+    padding: 10px;
+}
+
+.text-link:hover {
+    color: #5a6268; /* Tom mais escuro de cinza para o hover */
+}

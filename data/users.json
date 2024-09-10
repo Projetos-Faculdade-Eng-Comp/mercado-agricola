@@ -1,0 +1,58 @@
+[
+  {
+    "primeiroNome": "Moises",
+    "ultimoNome": "Filho",
+    "email": "moisesfilho@gmail.com",
+    "senha": "123",
+    "perfil": "admin"
+  },
+  {
+    "primeiroNome": "Natan",
+    "ultimoNome": "Macedo",
+    "email": "natanmacedo@gmail.com",
+    "senha": "234",
+    "perfil": "produtor"
+  },
+  {
+    "primeiroNome": "Felipe",
+    "ultimoNome": "Bezerra",
+    "email": "felipebezerra@gmail.com",
+    "senha": "345",
+    "perfil": "comprador"
+  },
+  {
+    "primeiroNome": "Theodoro",
+    "ultimoNome": "Manoel",
+    "email": "themanoel@gmail.com",
+    "senha": "456",
+    "perfil": "comprador"
+  },
+  {
+    "primeiroNome": "Larissa",
+    "ultimoNome": "Marinho",
+    "email": "larimarinho@gmail.com",
+    "senha": "567",
+    "perfil": "produtor"
+  },
+  {
+    "primeiroNome": "Channel",
+    "ultimoNome": "Burke",
+    "email": "chaburke@gmail.com",
+    "senha": "789",
+    "perfil": "produtor"
+  },
+  {
+    "primeiroNome": "Xavier",
+    "ultimoNome": "Dantas",
+    "email": "xavierdantas@gmail.com",
+    "senha": "159",
+    "perfil": "comprador"
+  },
+  {
+    "primeiroNome": "Victor",
+    "ultimoNome": "Chagas",
+    "email": "victorchagaslima@alu.ufc.br",
+    "senha": "123",
+    "perfil": "comprador"
+  }
+]

@@ -1,0 +1,100 @@
+/* public/styles/cadastro.css */
+
+body {
+    background-color: #d4edda; /* Fundo verde claro */
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+}
+
+.form-container {
+    max-width: 400px; /* Largura do formulário */
+    margin: 50px auto; /* Centraliza o formulário na tela */
+    padding: 20px; /* Espaçamento interno do formulário */
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #fff;
+}
+
+h1 {
+    text-align: center;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px; /* Margem abaixo das labels */
+    font-weight: bold;
+}
+
+input[type="text"], 
+input[type="email"], 
+input[type="password"] {
+    display: block;
+    width: calc(100% - 20px); /* Ajusta a largura para incluir padding interno */
+    padding: 10px; /* Espaçamento interno dos campos */
+    margin-bottom: 15px; /* Margem abaixo dos campos */
+    border-radius: 4px;
+    border: 1px solid #ddd;
+}
+
+.radio-group {
+    display: flex; /* Flexbox para alinhar os botões radiais lado a lado */
+    gap: 20px; /* Espaçamento entre os botões radiais */
+    justify-content: center; /* Centraliza os botões radiais horizontalmente */
+    margin-bottom: 15px; /* Espaçamento abaixo do grupo de botões radiais */
+    padding: 0; /* Remove o padding interno do fieldset */
+    border: none; /* Remove a borda do fieldset */
+}
+
+.radio-group label {
+    display: flex; /* Flexbox para alinhamento interno */
+    align-items: center; /* Alinha verticalmente o texto com o botão radial */
+}
+
+.radio-group input[type="radio"] {
+    margin-right: 5px; /* Espaçamento entre o botão radial e o texto */
+}
+
+.form-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.btn-submit {
+    background-color: #d4edda; /* Verde claro */
+    color: #333;
+    border: none;
+    padding: 10px;
+    border-radius: 4px;
+    font-weight: bold;
+    width: 48%;
+    text-align: center;
+}
+
+.btn-submit:hover {
+    background-color: #c3e6cb;
+}
+
+.text-link {
+    color: #6c757d; /* Cor cinza para o texto "Voltar" */
+    text-decoration: none; /* Remove o sublinhado */
+    font-weight: bold; /* Deixa o texto em negrito */
+    width: 48%;
+    display: inline-block;
+    text-align: center;
+    padding: 10px;
+    line-height: 40px; /* Alinha verticalmente com o botão "Enviar" */
+    border: 1px solid transparent; /* Define uma borda transparente para alinhar melhor */
+}
+
+.text-link:hover {
+    color: #5a6268; /* Tom mais escuro de cinza para o hover */
+}
+
+.success-msg {
+    color: green; /* Cor verde para mensagens de sucesso */
+    margin-top: 20px; /* Espaçamento acima da mensagem */
+    font-weight: bold;
+    text-align: center; /* Centraliza o texto da mensagem */
+}

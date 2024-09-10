@@ -82,3 +82,7 @@ footer {
   background-color: #272727;
   color: #ffffff;
 }
+
+.footer p {
+  font-size: 16px;
+}

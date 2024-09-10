@@ -85,3 +85,7 @@ footer {
   background-color: #000000;
   color: #ffffff;
 }
+
+footer p {
+  font-size: 16px;
+}
