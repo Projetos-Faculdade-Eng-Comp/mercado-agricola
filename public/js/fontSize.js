@@ -27,6 +27,7 @@ document.addEventListener("DOMContentLoaded", () => {
       "20px",
     ".products-section .products-content .products-view .product-card .cart-icon":
       "25px",
+    ".products-section .products-content .search-bar .add-product-icon": "35px",
     ".footer p": "16px",
   };
 

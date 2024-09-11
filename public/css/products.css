@@ -39,16 +39,30 @@
 }
 
 .products-section .products-content .search-bar {
+  display: flex;
+  align-items: center;
   width: 100%;
   margin-bottom: 30px;
 }
 
 .products-section .products-content .search-bar input {
+  flex: 1;
   width: 100%;
   padding: 10px;
   font-size: 18px;
   border: 1px solid #cccccc;
   border-radius: 5px;
+}
+
+.products-section .products-content .search-bar .add-product-icon {
+  margin-left: 10px;
+  font-size: 35px;
+  color: #333;
+  text-decoration: none;
+}
+
+.products-section .products-content .search-bar .add-product-icon:hover {
+  color: #28a745;
 }
 
 .products-section .products-content .products-view {

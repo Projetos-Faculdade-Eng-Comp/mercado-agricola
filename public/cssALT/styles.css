@@ -24,15 +24,9 @@ main {
   background-color: #000000;
 }
 
-.navbar .logo h1 {
-  color: #ffffff;
-  font-size: 32px;
-  margin: 0;
-}
-
-.navbar .logo h1 a {
-  text-decoration: none;
-  color: #ffffff;
+.logo-img {
+  max-height: 50px;
+  width: auto;
 }
 
 .navbar .nav-links {

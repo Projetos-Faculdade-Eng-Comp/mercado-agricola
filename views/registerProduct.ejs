@@ -1,29 +1,36 @@
 <!doctype html>
 <html lang="pt-BR">
-  <head>
+<head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Cadastrar Produto</title>
-    <link rel="stylesheet" href="css/signUp.css" />
-  </head>
-  <body>
+    <title>Cadastro de Produto</title>
+    <link rel="stylesheet" href="/css/registerProduct.css">
+</head>
+<body>
     <div class="form-container">
-      <h1>Cadastrar Novo Produto</h1>
-      <form action="/produto/cadastrar" method="post">
-        <label for="nome">Nome do Produto:</label>
-        <input type="text" id="nome" name="nome" required />
+        <h1>Cadastrar produto</h1>
 
-        <label for="preco">Preço:</label>
-        <input type="number" id="preco" name="preco" step="0.01" required />
+        <% if (successMsg) { %>
+            <div id="success-msg" style="color: green; text-align: center; margin-bottom: 10px;">
+                <%= successMsg %>
+            </div>
+        <% } %>
 
-        <label for="descricao">Descrição:</label>
-        <textarea id="descricao" name="descricao" rows="4" required></textarea>
+        <form action="/products/registerProduct" method="post">
+            <label for="name">Nome do Produto:</label>
+            <input type="text" id="name" name="name" required>
 
-        <div class="form-buttons">
-          <a href="/perfil" class="text-link">Voltar</a>
-          <button type="submit" class="btn-submit">Cadastrar</button>
-        </div>
-      </form>
+            <label for="description">Descrição:</label>
+            <input type="text" id="description" name="description" required>
+
+            <label for="price">Preço:</label>
+            <input type="number" id="price" name="price" step="0.01" required>
+
+            <div class="form-buttons">
+                <a href="/" class="text-link">Voltar</a>
+                <button type="submit" class="btn-submit">Cadastrar</button>
+            </div>
+        </form>
     </div>
-  </body>
+</body>
 </html>

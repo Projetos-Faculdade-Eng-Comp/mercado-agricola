@@ -109,7 +109,89 @@ app.get("/producers", (req, res) => {
 
 app.get("/products", (req, res) => {
   const user = req.session.user || null;
-  res.render("products", { user });
+
+  fs.readFile("data/products.json", "utf8", (err, data) => {
+    if (err) {
+      return res.status(500).send("Erro ao carregar produtos.");
+    }
+
+    const products = JSON.parse(data);
+    res.render("products", { user, products });
+  });
+});
+
+app.get("/products/registerProduct", (req, res) => {
+  const successMsg = req.session.successMsg || null;
+  req.session.successMsg = null;
+  res.render("registerProduct", { successMsg });
+});
+
+app.post("/products/registerProduct", (req, res) => {
+  const { name, description, price } = req.body;
+
+  fs.readFile("data/products.json", "utf8", (err, data) => {
+    if (err && err.code === "ENOENT") {
+      let products = [];
+      products.push({ name, description, price });
+
+      fs.writeFile(
+        "data/products.json",
+        JSON.stringify(products, null, 2),
+        (err) => {
+          if (err) throw err;
+          req.session.successMsg = "Produto cadastrado com sucesso!";
+          res.redirect("/products/registerProduct");
+        }
+      );
+    } else if (err) {
+      throw err;
+    } else {
+      let products = JSON.parse(data);
+
+      products.push({ name, description, price });
+
+      fs.writeFile(
+        "data/products.json",
+        JSON.stringify(products, null, 2),
+        (err) => {
+          if (err) throw err;
+          req.session.successMsg = "Produto cadastrado com sucesso!";
+          res.redirect("/products/registerProduct");
+        }
+      );
+    }
+  });
+});
+
+app.get("/cart", (req, res) => {
+  const user = req.session.user;
+  const cart = req.session.cart || [];
+
+  if (!user) {
+    req.session.errorMsg = "Faça login para visualizar o carrinho.";
+    return res.redirect("/login");
+  }
+
+  res.render("cart", { cart });
+});
+
+app.post("/add-to-cart", (req, res) => {
+  const user = req.session.user;
+  const { product, price } = req.body;
+
+  if (!user) {
+    req.session.errorMsg =
+      "Você precisa estar logado para adicionar itens ao carrinho.";
+    return res.redirect("/login");
+  }
+
+  if (!req.session.cart) {
+    req.session.cart = [];
+  }
+
+  req.session.cart.push({ product, price });
+  req.session.successMsg = "Produto adicionado ao carrinho com sucesso!";
+  res.redirect("/products");
 });
 
 app.get("/logout", (req, res) => {

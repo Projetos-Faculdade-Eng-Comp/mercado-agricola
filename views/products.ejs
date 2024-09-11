@@ -26,7 +26,7 @@
           <a href="#" id="increase-font"><i class="fas fa-plus"></i></a>
           <a href="#" id="decrease-font"><i class="fas fa-minus"></i></a>
           <a href="#" id="toggle-style"><i class="fas fa-sync-alt"></i></a>
-          <a href="#"><i class="fas fa-shopping-cart"></i></a>
+          <a href="/cart"><i class="fas fa-shopping-cart"></i></a>
           <% if (!user) { %>
             <a href="/login"><i class="fas fa-user"></i></a>
           <% } else { %>
@@ -40,32 +40,38 @@
         <div class="filters">
           <h3>Filtros</h3>
           <ul>
-            <li>
-              <label><input type="checkbox" /> Orgânico</label>
-            </li>
-            <li>
-              <label><input type="checkbox" /> Artesanal</label>
-            </li>
-            <li>
-              <label><input type="checkbox" /> Exportação</label>
-            </li>
+            <li><label><input type="checkbox" /> Orgânico</label></li>
+            <li><label><input type="checkbox" /> Artesanal</label></li>
+            <li><label><input type="checkbox" /> Exportação</label></li>
           </ul>
         </div>
         <div class="products-content">
           <div class="search-bar">
             <input type="text" placeholder="Buscar produtos..." />
+            <% if (user && (user.perfil === 'produtor' || user.perfil === 'admin')) { %>
+              <a href="/products/registerProduct" class="add-product-icon">
+                <i class="fas fa-plus-circle"></i>
+              </a>
+            <% } %>
           </div>
           <div class="products-view">
-            <div class="product-card">
-              <div class="product-image">
-                <img src="https://via.placeholder.com/200" alt="Produto" />
-                <a href="#" class="cart-icon"><i class="fas fa-cart-plus"></i></a>
+            <% products.forEach(product => { %>
+              <div class="product-card">
+                <div class="product-image">
+                  <img src="<%= product.image %>" alt="<%= product.name %>" />
+                  <form action="/add-to-cart" method="POST">
+                    <input type="hidden" name="product" value="<%= product.name %>" />
+                    <input type="hidden" name="price" value="<%= product.price %>" />
+                    <button type="submit" class="cart-icon">
+                      <i class="fas fa-cart-plus"></i>
+                    </button>
+                  </form>
+                </div>
+                <h3><%= product.name %></h3>
+                <p>R$ <%= product.price %></p>
               </div>
-              <h3>Tomate</h3>
-              <p>R$ 10,00</p>
-            </div>
+            <% }) %>
           </div>
-          <div class="buy-cart"></div>
         </div>
       </section>
     </main>
