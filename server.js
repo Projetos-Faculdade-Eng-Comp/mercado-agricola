@@ -165,33 +165,13 @@ app.post("/products/registerProduct", (req, res) => {
 
 app.get("/cart", (req, res) => {
   const user = req.session.user;
-  const cart = req.session.cart || [];
 
   if (!user) {
     req.session.errorMsg = "Faça login para visualizar o carrinho.";
     return res.redirect("/login");
   }
 
-  res.render("cart", { cart });
-});
-
-app.post("/add-to-cart", (req, res) => {
-  const user = req.session.user;
-  const { product, price } = req.body;
-
-  if (!user) {
-    req.session.errorMsg =
-      "Você precisa estar logado para adicionar itens ao carrinho.";
-    return res.redirect("/login");
-  }
-
-  if (!req.session.cart) {
-    req.session.cart = [];
-  }
-
-  req.session.cart.push({ product, price });
-  req.session.successMsg = "Produto adicionado ao carrinho com sucesso!";
-  res.redirect("/products");
+  res.render("cart", { user });
 });
 
 app.get("/logout", (req, res) => {

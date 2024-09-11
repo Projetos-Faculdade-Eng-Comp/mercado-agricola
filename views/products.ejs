@@ -6,12 +6,9 @@
     <title>Catálogo de Produtos</title>
     <link id="main-styles" rel="stylesheet" href="css/styles.css" />
     <link id="page-styles" rel="stylesheet" href="css/products.css" />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
-    />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
   </head>
-  <body>
+  <body data-user-email="<%= user ? user.email : '' %>">
     <header>
       <nav class="navbar">
         <div class="logo">
@@ -61,13 +58,13 @@
               <div class="product-card">
                 <div class="product-image">
                   <img src="<%= product.image %>" alt="<%= product.name %>" />
-                  <form action="/add-to-cart" method="POST">
-                    <input type="hidden" name="product" value="<%= product.name %>" />
-                    <input type="hidden" name="price" value="<%= product.price %>" />
-                    <button type="submit" class="cart-icon">
-                      <i class="fas fa-cart-plus"></i>
-                    </button>
-                  </form>
+                  <button 
+                    id="add-to-cart-<%= product.name %>" 
+                    data-product="<%= product.name %>" 
+                    data-price="<%= product.price %>" 
+                    class="cart-icon">
+                    <i class="fas fa-cart-plus"></i>
+                  </button>
                 </div>
                 <h3><%= product.name %></h3>
                 <p>R$ <%= product.price %></p>
@@ -82,5 +79,6 @@
     </footer>
     <script src="js/styleToggle.js"></script>
     <script src="js/fontSize.js"></script>
+    <script src="js/cart.js"></script>
   </body>
 </html>
