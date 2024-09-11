@@ -48,23 +48,34 @@
   <script src="js/fontSize.js"></script>
   <script src="/js/cart.js"></script>
   <script>
-    document.addEventListener("DOMContentLoaded", function () {
+    document.addEventListener("DOMContentLoaded", () => {
       const userEmail = document.body.dataset.userEmail;
 
       if (userEmail) {
-        const cart = getCartFromLocalStorage(userEmail);
-        const cartItemsDiv = document.getElementById('cart-items');
+        fetch(`/cart/items?email=${userEmail}`)
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.success) {
+              const cartItemsDiv = document.getElementById('cart-items');
 
-        if (cart.length === 0) {
-          cartItemsDiv.innerHTML = "<p>Seu carrinho está vazio.</p>";
-        } else {
-          cartItemsDiv.innerHTML = cart.map(item => `
-            <div class="cart-item">
-              <p>${item.product}</p>
-              <p>R$${item.price}</p>
-            </div>
-          `).join('');
-        }
+              if (data.cart.length === 0) {
+                cartItemsDiv.innerHTML = "<p>Seu carrinho está vazio.</p>";
+              } else {
+                cartItemsDiv.innerHTML = data.cart.map(item => `
+                  <div class="cart-item">
+                    <p>${item.product}</p>
+                    <p>R$ ${item.price}</p>
+                  </div>
+                `).join('');
+              }
+            } else {
+              document.getElementById('cart-items').innerHTML = "<p>Erro ao carregar o carrinho.</p>";
+            }
+          })
+          .catch((error) => {
+            console.error("Erro:", error);
+            document.getElementById('cart-items').innerHTML = "<p>Erro ao carregar o carrinho.</p>";
+          });
       } else {
         document.getElementById('cart-items').innerHTML = "<p>Faça login para ver o carrinho.</p>";
       }

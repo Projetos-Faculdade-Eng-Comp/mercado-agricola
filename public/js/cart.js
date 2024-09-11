@@ -1,33 +1,25 @@
-function saveCartToLocalStorage(userEmail, cart) {
-  if (userEmail) {
-    localStorage.setItem(`cart_${userEmail}`, JSON.stringify(cart));
-  }
-}
-
-function getCartFromLocalStorage(userEmail) {
-  const cart = localStorage.getItem(`cart_${userEmail}`);
-  return cart ? JSON.parse(cart) : [];
-}
-
 function addToCart(userEmail, product, price) {
   if (!userEmail) {
     alert("Você precisa estar logado para adicionar itens ao carrinho.");
     return;
   }
 
-  let cart = getCartFromLocalStorage(userEmail);
-
-  const existingProduct = cart.find((item) => item.product === product);
-
-  if (existingProduct) {
-    existingProduct.price = price;
-  } else {
-    cart.push({ product, price });
-  }
-
-  saveCartToLocalStorage(userEmail, cart);
-
-  alert("Produto adicionado ao carrinho!");
+  fetch("/cart/add", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ email: userEmail, product, price }),
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      if (data.success) {
+        alert("Produto adicionado ao carrinho!");
+      } else {
+        alert("Erro ao adicionar produto ao carrinho.");
+      }
+    })
+    .catch((error) => console.error("Erro:", error));
 }
 
 document.addEventListener("DOMContentLoaded", () => {

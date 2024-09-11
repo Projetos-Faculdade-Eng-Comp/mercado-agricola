@@ -11,6 +11,7 @@ app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.json());
 app.use(express.static(path.join(__dirname, "public")));
 
 app.use(
@@ -172,6 +173,66 @@ app.get("/cart", (req, res) => {
   }
 
   res.render("cart", { user });
+});
+
+app.post("/cart/add", (req, res) => {
+  const { email, product, price } = req.body;
+
+  if (!email || !product || !price) {
+    return res.status(400).json({ success: false, message: "Dados inválidos" });
+  }
+
+  fs.readFile("data/carts.json", "utf8", (err, data) => {
+    let carts = {};
+
+    if (!err) {
+      carts = JSON.parse(data);
+    }
+
+    if (!carts[email]) {
+      carts[email] = [];
+    }
+
+    const existingProduct = carts[email].find(
+      (item) => item.product === product
+    );
+
+    if (existingProduct) {
+      existingProduct.price = price;
+    } else {
+      carts[email].push({ product, price });
+    }
+
+    fs.writeFile("data/carts.json", JSON.stringify(carts, null, 2), (err) => {
+      if (err)
+        return res
+          .status(500)
+          .json({ success: false, message: "Erro ao salvar carrinho" });
+      res.json({ success: true });
+    });
+  });
+});
+
+app.get("/cart/items", (req, res) => {
+  const email = req.query.email;
+
+  if (!email) {
+    return res
+      .status(400)
+      .json({ success: false, message: "E-mail não fornecido" });
+  }
+
+  fs.readFile("data/carts.json", "utf8", (err, data) => {
+    if (err)
+      return res
+        .status(500)
+        .json({ success: false, message: "Erro ao carregar carrinho" });
+
+    const carts = JSON.parse(data);
+    const cart = carts[email] || [];
+
+    res.json({ success: true, cart });
+  });
 });
 
 app.get("/logout", (req, res) => {
