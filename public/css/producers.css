@@ -1,0 +1,47 @@
+.navbar {
+  border-bottom: 1px solid #a4a4a4;
+}
+
+.producer-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+}
+
+.producer-section h2 {
+  align-self: flex-start;
+  margin-left: 60px;
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+.producer-section .producer-table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 18px;
+  text-align: left;
+}
+
+.producer-section .producer-table th,
+.producer-section .producer-table td {
+  padding: 12px 15px;
+}
+
+.producer-section .producer-table thead {
+  background-color: #f7f8fa;
+  color: #000000;
+  border-bottom: 2px solid #dddddd;
+}
+
+.producer-section .producer-table tbody tr {
+  border-bottom: 1px solid #dddddd;
+}
+
+.producer-section .producer-table tbody tr:nth-of-type(even) {
+  background-color: #f3f3f3;
+}
+
+.producer-section .producer-table tbody tr:hover {
+  background-color: #f1f1f1;
+}

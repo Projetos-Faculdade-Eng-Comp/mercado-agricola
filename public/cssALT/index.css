@@ -1,0 +1,135 @@
+.home-img-section {
+  position: relative;
+  width: 100%;
+  height: 80vh;
+  overflow: hidden;
+}
+
+.home-img-section .home-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.home-img-section .img-section-content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #000000cc;
+  color: #ffffff;
+  padding: 20px;
+  text-align: center;
+  border-radius: 2px;
+  width: 50%;
+}
+
+.home-img-section .img-section-content i {
+  font-size: 60px;
+  color: #ff0000;
+  margin-top: 10px;
+}
+
+.home-img-section .img-section-content h2 {
+  font-size: 56px;
+  font-weight: 400;
+  margin: 10px 0px;
+}
+
+.home-img-section .img-section-content p {
+  margin: 0 40px;
+  font-size: 28px;
+  font-weight: 500;
+}
+
+.home-img-section .img-section-content button {
+  padding: 12px 24px;
+  margin-top: 30px;
+  margin-bottom: 40px;
+  font-size: 28px;
+  color: #ffffff;
+  background-color: #ff0000;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.home-img-section .img-section-content button:hover {
+  background-color: #cc0000;
+}
+
+.home-product-section {
+  text-align: center;
+  padding: 90px 160px;
+}
+
+.home-product-section h2 {
+  margin: 0 0 25px;
+  font-size: 52px;
+  font-weight: 400;
+}
+
+.home-product-section p {
+  margin: 25px 0 0;
+  font-size: 28px;
+  font-weight: 500;
+}
+
+.home-product-section .products-view {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 30px;
+  padding: 10px 300px;
+  margin: 30px 0 60px;
+}
+
+.home-product-section .product-card {
+  background-color: #ffffff;
+  border: 2px solid #000000;
+  border-radius: 8px;
+  padding: 20px;
+  text-align: center;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.4);
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+.home-product-section .product-card img {
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+}
+
+.home-product-section .product-card h3 {
+  margin: 25px 0;
+  font-size: 32px;
+  color: #000000;
+}
+
+.home-product-section .product-card p {
+  color: #ff0000;
+  margin: 0;
+  font-weight: bold;
+}
+
+.home-product-section .product-card:hover {
+  transform: scale(1.05);
+  box-shadow: 0px 0px 16px rgba(0, 0, 0, 0.5);
+}
+
+.home-product-section button {
+  padding: 12px 24px;
+  font-size: 32px;
+  color: #ffffff;
+  background-color: #ff0000;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.home-product-section button:hover {
+  background-color: #cc0000;
+}

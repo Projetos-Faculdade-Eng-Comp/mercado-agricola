@@ -1,0 +1,50 @@
+.navbar {
+  border-bottom: 2px solid #000000;
+}
+
+.producer-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  background-color: #ffffff;
+}
+
+.producer-section h2 {
+  align-self: flex-start;
+  margin-left: 60px;
+  font-size: 32px;
+  margin-bottom: 20px;
+  color: #000000;
+}
+
+.producer-section .producer-table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 20px;
+  text-align: left;
+  color: #000000;
+}
+
+.producer-section .producer-table th,
+.producer-section .producer-table td {
+  padding: 15px;
+  border: 2px solid #000000;
+}
+
+.producer-section .producer-table thead {
+  background-color: #000000;
+  color: #ffffff;
+}
+
+.producer-section .producer-table tbody tr {
+  border-bottom: 2px solid #000000;
+}
+
+.producer-section .producer-table tbody tr:nth-of-type(even) {
+  background-color: #e0e0e0;
+}
+
+.producer-section .producer-table tbody tr:hover {
+  background-color: #cccccc;
+}

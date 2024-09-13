@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mercado agrícola</title>
+    <link id="main-styles" rel="stylesheet" href="css/styles.css" />
+    <link id="page-styles" rel="stylesheet" href="css/index.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+  </head>
+  <body>
+    <header>
+      <nav class="navbar">
+        <div class="logo">
+          <h1><a href="index.html">Logo</a></h1>
+        </div>
+        <ul class="nav-links">
+          <li><a href="producers.html">Explorar</a></li>
+          <li><a href="#">Sobre</a></li>
+          <li><a href="#">Contato</a></li>
+        </ul>
+        <div class="nav-icons">
+          <a href="#" id="increase-font"><i class="fas fa-plus"></i></a>
+          <a href="#" id="decrease-font"><i class="fas fa-minus"></i></a>
+          <a href="#" id="toggle-style"><i class="fas fa-sync-alt"></i></a>
+          <a href="#"><i class="fas fa-shopping-cart"></i></a>
+          <a href="#"><i class="fas fa-user"></i></a>
+        </div>
+      </nav>
+    </header>
+    <main>
+      <section class="home-img-section">
+        <img
+          src="images/home-img.jpg"
+          alt="Campo de cultivo"
+          class="home-img"
+        />
+        <div class="img-section-content">
+          <i class="fas fa-leaf"></i>
+          <h2>Direto do campo</h2>
+          <p>
+            Descubra o frescor da natureza com os melhores produtos agrícolas,
+            cultivados com carinho e entregues com qualidade.
+          </p>
+          <button>Conheça nossos produtos</button>
+        </div>
+      </section>
+      <section class="home-product-section">
+        <h2>Produtos frescos</h2>
+        <p>Viva a experiência única de frescor cultivado com carinho</p>
+        <div class="products-view">
+          <div class="product-card">
+            <img src="images/tomate.png" alt="Tomate" />
+            <h3>Tomate</h3>
+            <p>R$ 10,00</p>
+          </div>
+          <div class="product-card">
+            <img src="images/tomate.png" alt="Tomate" />
+            <h3>Tomate</h3>
+            <p>R$ 10,00</p>
+          </div>
+          <div class="product-card">
+            <img src="images/tomate.png" alt="Tomate" />
+            <h3>Tomate</h3>
+            <p>R$ 10,00</p>
+          </div>
+          <div class="product-card">
+            <img src="images/tomate.png" alt="Tomate" />
+            <h3>Tomate</h3>
+            <p>R$ 10,00</p>
+          </div>
+          <div class="product-card">
+            <img src="images/tomate.png" alt="Tomate" />
+            <h3>Tomate</h3>
+            <p>R$ 10,00</p>
+          </div>
+          <div class="product-card">
+            <img src="images/tomate.png" alt="Tomate" />
+            <h3>Tomate</h3>
+            <p>R$ 10,00</p>
+          </div>
+          <div class="product-card">
+            <img src="images/tomate.png" alt="Tomate" />
+            <h3>Tomate</h3>
+            <p>R$ 10,00</p>
+          </div>
+          <div class="product-card">
+            <img src="images/tomate.png" alt="Tomate" />
+            <h3>Tomate</h3>
+            <p>R$ 10,00</p>
+          </div>
+        </div>
+        <button id="productsButton">Ver mais produtos</button>
+      </section>
+    </main>
+    <footer>
+      <p>&copy; 2024 Mercado agrícola. Todos os direitos reservados.</p>
+    </footer>
+    <script>
+      document.getElementById("productsButton").onclick = function () {
+        window.location.href = "products.html";
+      };
+    </script>
+    <script src="js/styleToggle.js"></script>
+    <script src="js/fontSize.js"></script>
+  </body>
+</html>
