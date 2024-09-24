@@ -54,5 +54,12 @@
     "email": "victorchagaslima@alu.ufc.br",
     "senha": "123",
     "perfil": "comprador"
+  },
+  {
+    "primeiroNome": "Francisco",
+    "ultimoNome": "Matias",
+    "email": "fm@gmail.com",
+    "senha": "123",
+    "perfil": "produtor"
   }
 ]

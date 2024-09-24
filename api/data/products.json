@@ -16,5 +16,10 @@
     "description": "A uva é o fruto da videira ou parreira, uma planta da família Vitaceae. É originária da Ásia e uma das frutas mais antigas utilizadas na alimentação humana. Existem mais de 60 mil variedades da fruta. A cor, o sabor e o tamanho variam de acordo com cada espécie.",
     "price": "0.20",
     "image": "https://via.placeholder.com/200"
+  },
+  {
+    "name": "Pera",
+    "description": "Uma bela pera",
+    "price": "0.22"
   }
 ]

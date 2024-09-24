@@ -38,7 +38,17 @@
     <section class="cart-section">
       <h2>Meu Carrinho</h2>
       <div id="cart-items">
-      </div>
+        <% if (cartItems && cartItems.length > 0) { %>
+          <% cartItems.forEach(item => { %>
+            <div class="cart-item">
+              <p><%= item.product %></p>
+              <p>R$ <%= item.price %></p>
+            </div>
+          <% }); %>
+        <% } else { %>
+          <p>Seu carrinho está vazio.</p>
+        <% } %>
+      </div>      
     </section>
   </main>
   <footer class="footer">
@@ -53,29 +63,6 @@
 
       if (userEmail) {
         fetch(`/cart/items?email=${userEmail}`)
-          .then((response) => response.json())
-          .then((data) => {
-            if (data.success) {
-              const cartItemsDiv = document.getElementById('cart-items');
-
-              if (data.cart.length === 0) {
-                cartItemsDiv.innerHTML = "<p>Seu carrinho está vazio.</p>";
-              } else {
-                cartItemsDiv.innerHTML = data.cart.map(item => `
-                  <div class="cart-item">
-                    <p>${item.product}</p>
-                    <p>R$ ${item.price}</p>
-                  </div>
-                `).join('');
-              }
-            } else {
-              document.getElementById('cart-items').innerHTML = "<p>Erro ao carregar o carrinho.</p>";
-            }
-          })
-          .catch((error) => {
-            console.error("Erro:", error);
-            document.getElementById('cart-items').innerHTML = "<p>Erro ao carregar o carrinho.</p>";
-          });
       } else {
         document.getElementById('cart-items').innerHTML = "<p>Faça login para ver o carrinho.</p>";
       }

@@ -1,0 +1,52 @@
+[
+    {
+      "id": 1,
+      "nome": "João Silva",
+      "descricao": "Produtor de alimentos orgânicos com mais de 20 anos de experiência.",
+      "rendaAnual": "R$ 100.000",
+      "produtos": ["Alface", "Tomate", "Cenoura"]
+    },
+    {
+      "id": 2,
+      "nome": "Maria Oliveira",
+      "descricao": "Especialista em produtos artesanais e sustentáveis.",
+      "rendaAnual": "R$ 85.000",
+      "produtos": ["Pães", "Queijos", "Mel"]
+    },
+    {
+      "id": 3,
+      "nome": "Carlos Souza",
+      "descricao": "Engenheiro agrônomo dedicado à produção de grãos.",
+      "rendaAnual": "R$ 120.000",
+      "produtos": ["Soja", "Milho", "Trigo"]
+    },
+    {
+      "id": 4,
+      "nome": "Ana Martins",
+      "descricao": "Produtora de frutas exóticas com foco em exportação.",
+      "rendaAnual": "R$ 75.000",
+      "produtos": ["Abacaxi", "Manga", "Kiwi"]
+    },
+    {
+      "id": 5,
+      "nome": "Pedro Lima",
+      "descricao": "Criação de gado e produção de leite orgânico.",
+      "rendaAnual": "R$ 95.000",
+      "produtos": ["Leite", "Queijo", "Carne"]
+    },
+    {
+      "id": 6,
+      "nome": "Rosa Santos",
+      "descricao": "Especialista em horticultura sustentável.",
+      "rendaAnual": "R$ 80.000",
+      "produtos": ["Alface", "Rúcula", "Espinafre"]
+    },
+    {
+      "id": 7,
+      "nome": "José Fernandes",
+      "descricao": "Produção de vinhos orgânicos em pequena escala.",
+      "rendaAnual": "R$ 90.000",
+      "produtos": ["Vinho Tinto", "Vinho Branco"]
+    }
+  ]
+  
