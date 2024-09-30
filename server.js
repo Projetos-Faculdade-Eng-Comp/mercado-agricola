@@ -66,6 +66,41 @@ app.get("/", (req, res) => {
   res.render("index", { user });
 });
 
+app.get("/admin/users", async (req, res) => {
+  const user = req.session.user;
+
+  if (!user || user.perfil !== "admin") {
+    return res.status(403).send("Acesso negado");
+  }
+
+  try {
+    const response = await axios.get("http://localhost:3001/api/users");
+    const users = response.data;
+
+    res.render("usersList", { user, users });
+  } catch (error) {
+    req.session.errorMsg = "Erro ao carregar usuários.";
+    res.redirect("/");
+  }
+});
+
+app.delete("/admin/users/:email", async (req, res) => {
+  const user = req.session.user;
+
+  if (!user || user.perfil !== "admin") {
+    return res.status(403).send("Acesso negado");
+  }
+
+  const email = req.params.email;
+
+  try {
+    const response = await axios.delete(`http://localhost:3001/api/users/${email}`);
+    res.status(200).send("Usuário excluído com sucesso!");
+  } catch (error) {
+    res.status(500).send("Erro ao excluir usuário.");
+  }
+});
+
 app.get("/producers", async (req, res) => {
   const user = req.session.user || null;
   
@@ -114,11 +149,19 @@ app.get("/cart", async (req, res) => {
     return res.redirect("/login");
   }
 
-  try {
-    const response = await axios.get(`http://localhost:3001/api/cart?email=${user.email}`); // Passa o email como query
-    const cartItems = response.data.cart; // Os itens do carrinho retornados pela API
+  // Obtenha as mensagens de erro e sucesso, se existirem
+  const errorMsg = req.session.errorMsg || null;
+  const successMsg = req.session.successMsg || null;
+  
+  // Limpe as mensagens após a leitura
+  req.session.errorMsg = null;
+  req.session.successMsg = null;
 
-    res.render("cart", { user, cartItems });
+  try {
+    const response = await axios.get(`http://localhost:3001/api/cart?email=${user.email}`);
+    const cartItems = response.data.cart;
+
+    res.render("cart", { user, cartItems, errorMsg, successMsg });
   } catch (error) {
     req.session.errorMsg = "Erro ao carregar o carrinho.";
     res.redirect("/");

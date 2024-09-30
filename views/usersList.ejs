@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mercado agrícola</title>
+  </head>
+  <body>
+    <h2>Gerenciamento de Usuários</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Primeiro Nome</th>
+          <th>Último Nome</th>
+          <th>Email</th>
+          <th>Perfil</th>
+          <th>Ação</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% users.forEach((user) => { %>
+            <tr>
+              <td><%= user.primeiroNome %></td>
+              <td><%= user.ultimoNome %></td>
+              <td><%= user.email %></td>
+              <td><%= user.perfil %></td>
+              <td>
+                <button onclick="deleteUser('<%= user.email %>')">Excluir</button>
+              </td>
+            </tr>
+        <% }) %>
+      </tbody>
+    </table>
+
+    <script>
+      function deleteUser(email) {
+        if (confirm("Tem certeza que deseja excluir este usuário?")) {
+          fetch(`/admin/users/${email}`, {
+            method: "DELETE",
+          })
+            .then((response) => response.text())
+            .then((data) => {
+              alert(data);
+              window.location.reload();
+            })
+            .catch((error) => {
+              alert("Erro ao excluir o usuário.");
+            });
+        }
+      }
+    </script>
+  </body>
+</html>

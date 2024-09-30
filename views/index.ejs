@@ -23,6 +23,9 @@
           <li><a href="/producers">Explorar</a></li>
           <li><a href="#">Sobre</a></li>
           <li><a href="#">Contato</a></li>
+          <% if (user && user.perfil === 'admin') { %>
+            <li><a href="/admin/users">Gerenciar Usuários</a></li>
+          <% } %>
         </ul>
         <div class="nav-icons">
           <a href="#" id="increase-font"><i class="fas fa-plus"></i></a>

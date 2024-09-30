@@ -40,6 +40,38 @@ app.post("/api/login", (req, res) => {
   });
 });
 
+app.get("/api/users", (req, res) => {
+  fs.readFile("data/users.json", "utf8", (err, data) => {
+    if (err) return res.status(500).send("Erro ao carregar usuários.");
+    const users = JSON.parse(data);
+    res.status(200).json(users);
+  });
+});
+
+app.delete("/api/users/:email", (req, res) => {
+  const email = req.params.email;
+
+  fs.readFile("data/users.json", "utf8", (err, data) => {
+    if (err) return res.status(500).send("Erro ao carregar usuários.");
+
+    let users = JSON.parse(data);
+    const newUsers = users.filter((user) => user.email !== email);
+
+    if (users.length === newUsers.length) {
+      return res.status(404).send("Usuário não encontrado.");
+    }
+
+    fs.writeFile(
+      "data/users.json",
+      JSON.stringify(newUsers, null, 2),
+      (err) => {
+        if (err) return res.status(500).send("Erro ao excluir usuário.");
+        res.status(200).send("Usuário excluído com sucesso.");
+      }
+    );
+  });
+});
+
 // Produtos
 app.get("/api/products", (req, res) => {
   fs.readFile("data/products.json", "utf8", (err, data) => {
