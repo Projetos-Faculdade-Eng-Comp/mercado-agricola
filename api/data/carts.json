@@ -1,92 +1,33 @@
 {
   "moisesfilho@gmail.com": [
     {
-      "product": "Maçã",
-      "price": "1.20"
-    },
-    {
       "product": "Banana",
-      "price": "2.8"
-    },
-    {
-      "product": "Maçã",
-      "price": "1.20"
-    },
-    {
-      "product": "Maçã",
-      "price": "1.20"
-    },
-    {
-      "product": "Maçã",
-      "price": "1.20"
-    },
-    {
-      "product": "Banana",
-      "price": "2.8"
-    },
-    {
-      "product": "Uva",
-      "price": "0.20"
-    },
-    {
-      "product": "Banana",
-      "price": "2.8"
-    },
-    {
-      "product": "Banana",
-      "price": "2.8"
-    },
-    {
-      "product": "Maçã",
-      "price": "1.20"
-    },
-    {
-      "product": "Maçã",
-      "price": "1.20"
-    },
-    {
-      "product": "Maçã",
-      "price": "1.20"
-    },
-    {
-      "product": "Maçã",
-      "price": "1.20"
+      "price": "2.8",
+      "quantity": 4
     }
   ],
   "victorchagaslima@alu.ufc.br": [
     {
       "product": "Maçã",
-      "price": "1.20"
+      "price": "1.20",
+      "quantity": 1
     }
   ],
   "fm@gmail.com": [
     {
       "product": "Pera",
-      "price": "0.22"
-    },
-    {
-      "product": "Pera",
-      "price": "0.22"
-    },
-    {
-      "product": "Pera",
-      "price": "0.22"
+      "price": "0.22",
+      "quantity": 3
     },
     {
       "product": "Uva",
-      "price": "0.20"
+      "price": "0.20",
+      "quantity": 2
     },
     {
       "product": "Maçã",
-      "price": "1.20"
-    },
-    {
-      "product": "Uva",
-      "price": "0.20"
-    },
-    {
-      "product": "Maçã",
-      "price": "1.20"
+      "price": "1.20",
+      "quantity": 2
     }
   ]
 }

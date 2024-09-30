@@ -43,6 +43,10 @@
             <div class="cart-item">
               <p><%= item.product %></p>
               <p>R$ <%= item.price %></p>
+              <form action="/cart/delete" method="POST">
+                <input type="hidden" name="product" value="<%= item.product %>">
+                <button type="submit" class="btn-delete">Remover</button>
+              </form>
             </div>
           <% }); %>
         <% } else { %>

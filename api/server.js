@@ -82,13 +82,14 @@ app.get("/api/products", (req, res) => {
 });
 
 app.post("/api/products", (req, res) => {
-  const { name, description, price } = req.body;
+  const { name, description, price, imageUrl } = req.body;
+
   fs.readFile("data/products.json", "utf8", (err, data) => {
     let products = [];
     if (!err) {
       products = JSON.parse(data);
     }
-    products.push({ name, description, price });
+    products.push({ name, description, price, imageUrl }); // Adicionando a URL da imagem
     fs.writeFile(
       "data/products.json",
       JSON.stringify(products, null, 2),
@@ -127,24 +128,29 @@ app.get("/api/cart", (req, res) => {
 });
 
 app.post("/api/cart/add", (req, res) => {
-  const { email, product, price } = req.body;
+  const { email, product, price, quantity } = req.body;
+
   fs.readFile("data/carts.json", "utf8", (err, data) => {
-    let carts = {};
-    if (!err) {
-      carts = JSON.parse(data);
+    if (err) return res.status(500).send("Erro ao carregar o carrinho.");
+
+    let carts = JSON.parse(data);
+    const userCart = carts[email] || [];
+
+    // Verificar se o produto já está no carrinho
+    const existingProduct = userCart.find((item) => item.product === product);
+    if (existingProduct) {
+      // Atualizar a quantidade do produto existente
+      existingProduct.quantity += parseInt(quantity);
+    } else {
+      // Adicionar novo produto
+      userCart.push({ product, price, quantity: parseInt(quantity) });
     }
-    if (!carts[email]) {
-      carts[email] = [];
-    }
-    carts[email].push({ product, price });
+
+    carts[email] = userCart;
+
     fs.writeFile("data/carts.json", JSON.stringify(carts, null, 2), (err) => {
-      if (err)
-        return res
-          .status(500)
-          .json({ success: false, message: "Erro ao salvar carrinho." });
-      res
-        .status(200)
-        .json({ success: true, message: "Produto adicionado ao carrinho." });
+      if (err) return res.status(500).send("Erro ao salvar o carrinho.");
+      res.status(200).send("Produto adicionado ao carrinho!");
     });
   });
 });
@@ -158,6 +164,42 @@ app.get("/api/cart/:email", (req, res) => {
 
     if (carts[email]) {
       res.status(200).json({ success: true, cart: carts[email] });
+    } else {
+      res
+        .status(404)
+        .json({ success: false, message: "Carrinho não encontrado." });
+    }
+  });
+});
+
+app.post("/api/cart/delete", (req, res) => {
+  const { email, product } = req.body;
+
+  // Ler o arquivo JSON do carrinho
+  fs.readFile("data/carts.json", "utf8", (err, data) => {
+    if (err) {
+      return res
+        .status(500)
+        .json({ success: false, message: "Erro ao ler o carrinho." });
+    }
+
+    let carts = JSON.parse(data);
+
+    if (carts[email]) {
+      // Filtra o carrinho para remover o produto correspondente
+      carts[email] = carts[email].filter((item) => item.product !== product);
+
+      // Escreve de volta no arquivo JSON
+      fs.writeFile("data/carts.json", JSON.stringify(carts, null, 2), (err) => {
+        if (err) {
+          return res
+            .status(500)
+            .json({ success: false, message: "Erro ao salvar o carrinho." });
+        }
+        res
+          .status(200)
+          .json({ success: true, message: "Produto removido com sucesso." });
+      });
     } else {
       res
         .status(404)

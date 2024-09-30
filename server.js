@@ -4,9 +4,21 @@ const bodyParser = require("body-parser");
 const path = require("path");
 const session = require("express-session");
 const axios = require("axios");
+const multer = require("multer");
 
 const app = express();
 const PORT = 3000;
+
+// Configuração do Multer para upload de imagens
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, path.join(__dirname, "public/images"));
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + path.extname(file.originalname)); // Nome único para o arquivo
+  }
+});
+const upload = multer({ storage });
 
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
@@ -129,11 +141,19 @@ app.get("/products/registerProduct", (req, res) => {
   res.render("registerProduct", { successMsg });
 });
 
-app.post("/products/registerProduct", async (req, res) => {
+// Rota para o cadastro de produto com upload de imagem
+app.post("/products/registerProduct", upload.single("image"), async (req, res) => {
   const { name, description, price } = req.body;
+  const imageUrl = `/images/${req.file.filename}`; // Caminho da imagem salva
 
   try {
-    await axios.post("http://localhost:3001/api/products", { name, description, price });
+    // Enviando os dados do produto para a API (Componente C)
+    await axios.post("http://localhost:3001/api/products", {
+      name,
+      description,
+      price,
+      imageUrl
+    });
     req.session.successMsg = "Produto cadastrado com sucesso!";
     res.redirect("/products/registerProduct");
   } catch (error) {
@@ -170,21 +190,24 @@ app.get("/cart", async (req, res) => {
 
 // Rota para adicionar produto ao carrinho
 app.post("/cart/add", async (req, res) => {
-  const { product, price } = req.body;
+  const { product, price, quantity } = req.body; // Obtém a quantidade
   const user = req.session.user;
 
   if (!user) {
-    req.session.errorMsg = "Faça login para adicionar produtos ao carrinho.";
-    return res.redirect("/login");
+    return res.status(401).json({ success: false, message: "Faça login para adicionar produtos ao carrinho." });
   }
 
   try {
-    await axios.post("http://localhost:3001/api/cart/add", { email: user.email, product, price });
-    req.session.successMsg = "Produto adicionado ao carrinho.";
-    res.redirect("/cart");
+    await axios.post("http://localhost:3001/api/cart/add", { 
+      email: user.email, 
+      product, 
+      price, 
+      quantity // Enviar a quantidade para o servidor 2
+    });
+    res.status(200).json({ success: true, message: "Produto adicionado ao carrinho." }); // Responde com sucesso
   } catch (error) {
-    req.session.errorMsg = "Erro ao adicionar produto ao carrinho.";
-    res.redirect("/cart");
+    console.error(error);
+    res.status(500).json({ success: false, message: "Erro ao adicionar produto ao carrinho." });
   }
 });
 
@@ -211,6 +234,27 @@ app.get("/cart/items", (req, res) => {
       res.status(500).json({ success: false, message: "Erro ao carregar o carrinho." });
     });
 });
+
+app.post("/cart/delete", async (req, res) => {
+  const { product } = req.body;
+  const user = req.session.user;
+
+  if (!user) {
+    req.session.errorMsg = "Faça login para remover itens do carrinho.";
+    return res.redirect("/login");
+  }
+
+  try {
+    // Fazendo uma requisição à API do Servidor 2 para remover o item do carrinho
+    await axios.post(`http://localhost:3001/api/cart/delete`, { email: user.email, product });
+    req.session.successMsg = "Produto removido do carrinho.";
+    res.redirect("/cart");
+  } catch (error) {
+    req.session.errorMsg = "Erro ao remover produto do carrinho.";
+    res.redirect("/cart");
+  }
+});
+
 
 app.get("/logout", (req, res) => {
   req.session.destroy();

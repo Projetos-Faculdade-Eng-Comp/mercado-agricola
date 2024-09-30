@@ -3,23 +3,30 @@
     "name": "Maçã",
     "description": "O fruto é globoso, com uma profunda depressão no ponto de inserção da haste, que o prende aos ramos. De coloração vermelha ou verde, pode apresentar pequenas manchas esverdeadas ou amareladas.",
     "price": "1.20",
-    "image": "https://via.placeholder.com/200"
+    "imageUrl": "/images/maca.jpg"
   },
   {
     "name": "Banana",
     "description": "As bananas possuem um formato alongado, uma coloração amarela ou vermelha e um sabor doce. Por ser um fruto partenocárpico, a banana não possui sementes, com exceção de uma espécie vendida no mercado indonésio, a Musa balbisiana.",
     "price": "2.8",
-    "image": "https://via.placeholder.com/200"
+    "imageUrl": "/images/banana.jpg"
   },
   {
     "name": "Uva",
     "description": "A uva é o fruto da videira ou parreira, uma planta da família Vitaceae. É originária da Ásia e uma das frutas mais antigas utilizadas na alimentação humana. Existem mais de 60 mil variedades da fruta. A cor, o sabor e o tamanho variam de acordo com cada espécie.",
     "price": "0.20",
-    "image": "https://via.placeholder.com/200"
+    "imageUrl": "/images/uva.jpg"
   },
   {
     "name": "Pera",
     "description": "Uma bela pera",
-    "price": "0.22"
+    "price": "0.22",
+    "imageUrl": "/images/pera.jpg"
+  },
+  {
+    "name": "Mamão",
+    "description": "Muito bom",
+    "price": "5.00",
+    "imageUrl": "/images/1727663993813.jpg"
   }
 ]

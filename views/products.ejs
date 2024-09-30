@@ -57,7 +57,7 @@
             <% products.forEach(product => { %>
               <div class="product-card">
                 <div class="product-image">
-                  <img src="<%= product.image %>" alt="<%= product.name %>" />
+                  <img src="<%= product.imageUrl %>" alt="<%= product.name %>" />
                   <button 
                     id="add-to-cart-<%= product.name %>" 
                     data-product="<%= product.name %>" 
@@ -68,6 +68,7 @@
                 </div>
                 <h3><%= product.name %></h3>
                 <p>R$ <%= product.price %></p>
+                <input type="number" id="quantity-<%= product.name %>" class="product-quantity" min="1" step="1" value="1" />
               </div>
             <% }) %>
           </div>
