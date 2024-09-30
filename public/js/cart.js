@@ -1,4 +1,4 @@
-function addToCart(userEmail, product, price) {
+function addToCart(userEmail, product, price, quantity) {
   if (!userEmail) {
     alert("Você precisa estar logado para adicionar itens ao carrinho.");
     return;
@@ -9,7 +9,7 @@ function addToCart(userEmail, product, price) {
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ email: userEmail, product, price }),
+    body: JSON.stringify({ email: userEmail, product, price, quantity }), // Envia também a quantidade
   })
     .then((response) => response.json())
     .then((data) => {
@@ -22,14 +22,13 @@ function addToCart(userEmail, product, price) {
     .catch((error) => console.error("Erro:", error));
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-  const userEmail = document.querySelector("body").dataset.userEmail;
+// Atualiza o event listener para incluir a quantidade
+document.querySelectorAll(".cart-icon").forEach(button => {
+  button.addEventListener("click", function() {
+    const product = this.dataset.product;
+    const price = this.dataset.price;
+    const quantity = document.querySelector(`#quantity-${product}`).value; // Obter a quantidade
 
-  document.querySelectorAll(".cart-icon").forEach((button) => {
-    button.addEventListener("click", (event) => {
-      const product = event.currentTarget.dataset.product;
-      const price = event.currentTarget.dataset.price;
-      addToCart(userEmail, product, price);
-    });
+    addToCart(document.body.dataset.userEmail, product, price, quantity); // Chama a função com os parâmetros
   });
 });

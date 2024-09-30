@@ -23,6 +23,12 @@
           <li><a href="/producers">Explorar</a></li>
           <li><a href="#">Sobre</a></li>
           <li><a href="#">Contato</a></li>
+          <% if (user && user.perfil === 'admin') { %>
+            <li><a href="/admin/users">Usuários</a></li>
+          <% } %>
+          <% if (user && user.perfil === 'produtor') { %>
+            <li><a href="/products/myProducts">Meus produtos</a></li>
+          <% } %>
         </ul>
         <div class="nav-icons">
           <a href="#" id="increase-font"><i class="fas fa-plus"></i></a>
@@ -59,43 +65,43 @@
         <p>Viva a experiência única de frescor cultivado com carinho</p>
         <div class="products-view">
           <div class="product-card">
-            <img src="images/tomate.png" alt="Tomate" />
+            <img src="images/kiwi.jpg" alt="Kiwi" />
+            <h3>Kiwi</h3>
+            <p>R$ 10,00</p>
+          </div>
+          <div class="product-card">
+            <img src="images/laranja.jpg" alt="laranja" />
+            <h3>Laranja</h3>
+            <p>R$ 10,00</p>
+          </div>
+          <div class="product-card">
+            <img src="images/mamao.jpg" alt="Mamão" />
+            <h3>Mamão</h3>
+            <p>R$ 10,00</p>
+          </div>
+          <div class="product-card">
+            <img src="images/banana.jpg" alt="Banana" />
+            <h3>Banana</h3>
+            <p>R$ 10,00</p>
+          </div>
+          <div class="product-card">
+            <img src="images/maca.jpg" alt="Maça" />
             <h3>Tomate</h3>
             <p>R$ 10,00</p>
           </div>
           <div class="product-card">
-            <img src="images/tomate.png" alt="Tomate" />
-            <h3>Tomate</h3>
+            <img src="images/uva.jpg" alt="Uva" />
+            <h3>Uva</h3>
             <p>R$ 10,00</p>
           </div>
           <div class="product-card">
-            <img src="images/tomate.png" alt="Tomate" />
-            <h3>Tomate</h3>
+            <img src="images/melancia.jpg" alt="Melancia" />
+            <h3>Melancia</h3>
             <p>R$ 10,00</p>
           </div>
           <div class="product-card">
-            <img src="images/tomate.png" alt="Tomate" />
-            <h3>Tomate</h3>
-            <p>R$ 10,00</p>
-          </div>
-          <div class="product-card">
-            <img src="images/tomate.png" alt="Tomate" />
-            <h3>Tomate</h3>
-            <p>R$ 10,00</p>
-          </div>
-          <div class="product-card">
-            <img src="images/tomate.png" alt="Tomate" />
-            <h3>Tomate</h3>
-            <p>R$ 10,00</p>
-          </div>
-          <div class="product-card">
-            <img src="images/tomate.png" alt="Tomate" />
-            <h3>Tomate</h3>
-            <p>R$ 10,00</p>
-          </div>
-          <div class="product-card">
-            <img src="images/tomate.png" alt="Tomate" />
-            <h3>Tomate</h3>
+            <img src="images/caju.jpg" alt="Caju" />
+            <h3>Caju</h3>
             <p>R$ 10,00</p>
           </div>
         </div>

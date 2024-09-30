@@ -1,15 +1,27 @@
+// server.js (Componente B - Servidor de arquivos estáticos e templates)
 const express = require("express");
 const bodyParser = require("body-parser");
-const fs = require("fs");
 const path = require("path");
 const session = require("express-session");
+const axios = require("axios");
+const multer = require("multer");
 
 const app = express();
 const PORT = 3000;
 
+// Configuração do Multer para upload de imagens
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, path.join(__dirname, "public/images"));
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + path.extname(file.originalname)); // Nome único para o arquivo
+  },
+});
+const upload = multer({ storage });
+
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
-
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "public")));
@@ -22,6 +34,7 @@ app.use(
   })
 );
 
+// Rotas de renderização de templates
 app.get("/signUp", (req, res) => {
   const successMsg = req.session.successMsg || null;
   const errorMsg = req.session.errorMsg || null;
@@ -30,45 +43,22 @@ app.get("/signUp", (req, res) => {
   res.render("signUp", { successMsg, errorMsg });
 });
 
-app.post("/signUp", (req, res) => {
-  const { primeiroNome, ultimoNome, email, senha, confirmSenha, perfil } =
-    req.body;
-
-  if (senha !== confirmSenha) {
-    req.session.errorMsg = "As senhas não coincidem.";
-    return res.redirect("/signUp");
+app.post("/signUp", async (req, res) => {
+  const { primeiroNome, ultimoNome, email, senha, perfil } = req.body;
+  try {
+    await axios.post("http://localhost:3001/api/signUp", {
+      primeiroNome,
+      ultimoNome,
+      email,
+      senha,
+      perfil,
+    });
+    req.session.successMsg = "Cadastro realizado com sucesso!";
+    res.redirect("/signUp");
+  } catch (error) {
+    req.session.errorMsg = "Erro ao cadastrar usuário.";
+    res.redirect("/signUp");
   }
-
-  fs.readFile("data/users.json", "utf8", (err, data) => {
-    if (err) {
-      if (err.code === "ENOENT") {
-        let users = [];
-        users.push({ primeiroNome, ultimoNome, email, senha, perfil });
-
-        fs.writeFile(
-          "data/users.json",
-          JSON.stringify(users, null, 2),
-          (err) => {
-            if (err) throw err;
-            req.session.successMsg = "Cadastro realizado com sucesso!";
-            res.redirect("/signUp");
-          }
-        );
-      } else {
-        throw err;
-      }
-    } else {
-      let users = JSON.parse(data);
-
-      users.push({ primeiroNome, ultimoNome, email, senha, perfil });
-
-      fs.writeFile("data/users.json", JSON.stringify(users, null, 2), (err) => {
-        if (err) throw err;
-        req.session.successMsg = "Cadastro realizado com sucesso!";
-        res.redirect("/signUp");
-      });
-    }
-  });
 });
 
 app.get("/login", (req, res) => {
@@ -77,25 +67,19 @@ app.get("/login", (req, res) => {
   res.render("login", { errorMsg });
 });
 
-app.post("/login", (req, res) => {
+app.post("/login", async (req, res) => {
   const { email, senha } = req.body;
-
-  fs.readFile("data/users.json", "utf8", (err, data) => {
-    if (err) throw err;
-
-    let users = JSON.parse(data);
-    let user = users.find(
-      (user) => user.email === email && user.senha === senha
-    );
-
-    if (user) {
-      req.session.user = user;
-      res.redirect("/");
-    } else {
-      req.session.errorMsg = "E-mail ou senha incorretos. Tente novamente.";
-      res.redirect("/login");
-    }
-  });
+  try {
+    const response = await axios.post("http://localhost:3001/api/login", {
+      email,
+      senha,
+    });
+    req.session.user = response.data; // Salva o usuário na sessão
+    res.redirect("/");
+  } catch (error) {
+    req.session.errorMsg = "Credenciais inválidas.";
+    res.redirect("/login");
+  }
 });
 
 app.get("/", (req, res) => {
@@ -103,114 +87,267 @@ app.get("/", (req, res) => {
   res.render("index", { user });
 });
 
-app.get("/producers", (req, res) => {
-  const user = req.session.user || null;
-  res.render("producers", { user });
+app.get("/admin/users", async (req, res) => {
+  const user = req.session.user;
+
+  if (!user || user.perfil !== "admin") {
+    return res.status(403).send("Acesso negado");
+  }
+
+  try {
+    const response = await axios.get("http://localhost:3001/api/users");
+    const users = response.data;
+
+    res.render("usersList", { user, users });
+  } catch (error) {
+    req.session.errorMsg = "Erro ao carregar usuários.";
+    res.redirect("/");
+  }
 });
 
-app.get("/products", (req, res) => {
+app.delete("/admin/users/:email", async (req, res) => {
+  const user = req.session.user;
+
+  if (!user || user.perfil !== "admin") {
+    return res.status(403).send("Acesso negado");
+  }
+
+  const email = req.params.email;
+
+  try {
+    const response = await axios.delete(
+      `http://localhost:3001/api/users/${email}`
+    );
+    res.status(200).send("Usuário excluído com sucesso!");
+  } catch (error) {
+    res.status(500).send("Erro ao excluir usuário.");
+  }
+});
+
+app.get("/producers", async (req, res) => {
   const user = req.session.user || null;
 
-  fs.readFile("data/products.json", "utf8", (err, data) => {
-    if (err) {
-      return res.status(500).send("Erro ao carregar produtos.");
-    }
+  try {
+    const response = await axios.get("http://localhost:3001/api/producers"); // Chamada para a API
+    const producers = response.data; // O array de produtores retornado pela API
 
-    const products = JSON.parse(data);
-    res.render("products", { user, products });
-  });
+    res.render("producers", { user, producers }); // Renderiza a página com os dados dos produtores
+  } catch (error) {
+    req.session.errorMsg = "Erro ao carregar produtores.";
+    res.redirect("/");
+  }
+});
+
+app.get("/products", async (req, res) => {
+  const user = req.session.user || null;
+  const response = await axios.get("http://localhost:3001/api/products");
+  const products = response.data; // O array de produtos retornado pela API
+
+  res.render("products", { user, products });
 });
 
 app.get("/products/registerProduct", (req, res) => {
+  const user = req.session.user;
+
+  if (!user || user.perfil !== "produtor") {
+    return res.status(403).send("Acesso negado");
+  }
+
   const successMsg = req.session.successMsg || null;
   req.session.successMsg = null;
   res.render("registerProduct", { successMsg });
 });
 
-app.post("/products/registerProduct", (req, res) => {
-  const { name, description, price } = req.body;
+app.post(
+  "/products/registerProduct",
+  upload.single("image"),
+  async (req, res) => {
+    const user = req.session.user;
 
-  fs.readFile("data/products.json", "utf8", (err, data) => {
-    if (err && err.code === "ENOENT") {
-      let products = [];
-      products.push({ name, description, price });
-
-      fs.writeFile(
-        "data/products.json",
-        JSON.stringify(products, null, 2),
-        (err) => {
-          if (err) throw err;
-          req.session.successMsg = "Produto cadastrado com sucesso!";
-          res.redirect("/products/registerProduct");
-        }
-      );
-    } else if (err) {
-      throw err;
-    } else {
-      let products = JSON.parse(data);
-
-      products.push({ name, description, price });
-
-      fs.writeFile(
-        "data/products.json",
-        JSON.stringify(products, null, 2),
-        (err) => {
-          if (err) throw err;
-          req.session.successMsg = "Produto cadastrado com sucesso!";
-          res.redirect("/products/registerProduct");
-        }
-      );
+    if (!user || user.perfil !== "produtor") {
+      return res.status(403).send("Acesso negado");
     }
-  });
-});
 
-app.get("/cart", (req, res) => {
+    const { name, description, price } = req.body;
+    const imageUrl = `/images/${req.file.filename}`;
+
+    try {
+      await axios.post("http://localhost:3001/api/products", {
+        name,
+        description,
+        price,
+        imageUrl,
+        producerEmail: user.email,
+      });
+      req.session.successMsg = "Produto cadastrado com sucesso!";
+      res.redirect("/products/registerProduct");
+    } catch (error) {
+      req.session.errorMsg = "Erro ao cadastrar produto.";
+      res.redirect("/products/registerProduct");
+    }
+  }
+);
+
+app.get("/products/myProducts", async (req, res) => {
   const user = req.session.user;
 
+  if (!user || user.perfil !== "produtor") {
+    return res.status(403).send("Acesso negado");
+  }
+
+  try {
+    const response = await axios.post("http://localhost:3001/api/myProducts", {
+      producerEmail: user.email,
+    });
+
+    const products = Array.isArray(response.data) ? response.data : [];
+
+    res.render("myProducts", { user, products });
+  } catch (error) {
+    console.error("Erro ao obter produtos do produtor:", error);
+    res.status(500).send("Erro ao carregar produtos.");
+  }
+});
+
+app.post("/products/delete", async (req, res) => {
+  const user = req.session.user;
+  const { productId } = req.body;
+
+  if (!user || user.perfil !== "produtor") {
+    return res.status(403).send("Acesso negado");
+  }
+
+  try {
+    await axios.post("http://localhost:3001/api/products/delete", {
+      productId,
+      producerEmail: user.email,
+    });
+    res.redirect("/products/myProducts");
+  } catch (error) {
+    console.error("Erro ao deletar o produto:", error);
+    res.status(500).send("Erro ao deletar produto.");
+  }
+});
+
+app.get("/products/update/:productId", async (req, res) => {
+  const user = req.session.user;
+  const { productId } = req.params;
+
+  if (!user || user.perfil !== "produtor") {
+    return res.status(403).send("Acesso negado");
+  }
+
+  try {
+    const response = await axios.get(
+      `http://localhost:3001/api/products/${productId}`
+    );
+    const product = response.data;
+
+    const successMsg = req.session.successMsg || null;
+    req.session.successMsg = null;
+
+    res.render("updateProduct", { user, product, successMsg });
+  } catch (error) {
+    console.error("Erro ao carregar produto para atualização:", error);
+    res.status(500).send("Erro ao carregar produto.");
+  }
+});
+
+app.post(
+  "/products/update/:productId",
+  upload.single("image"),
+  async (req, res) => {
+    const user = req.session.user;
+    const { productId } = req.params;
+    const { name, description, price } = req.body;
+
+    if (!user || user.perfil !== "produtor") {
+      return res.status(403).send("Acesso negado");
+    }
+
+    try {
+      let imageUrl = req.body.existingImage;
+      if (req.file) {
+        imageUrl = `/images/${req.file.filename}`;
+      }
+
+      await axios.post(
+        `http://localhost:3001/api/products/update/${productId}`,
+        {
+          name,
+          description,
+          price,
+          imageUrl,
+          producerEmail: user.email,
+        }
+      );
+
+      req.session.successMsg = "Produto atualizado com sucesso!";
+      res.redirect(`/products/update/${productId}`);
+    } catch (error) {
+      console.error("Erro ao atualizar o produto:", error);
+      res.status(500).send("Erro ao atualizar produto.");
+    }
+  }
+);
+
+app.get("/cart", async (req, res) => {
+  const user = req.session.user;
   if (!user) {
     req.session.errorMsg = "Faça login para visualizar o carrinho.";
     return res.redirect("/login");
   }
 
-  res.render("cart", { user });
+  // Obtenha as mensagens de erro e sucesso, se existirem
+  const errorMsg = req.session.errorMsg || null;
+  const successMsg = req.session.successMsg || null;
+
+  // Limpe as mensagens após a leitura
+  req.session.errorMsg = null;
+  req.session.successMsg = null;
+
+  try {
+    const response = await axios.get(
+      `http://localhost:3001/api/cart?email=${user.email}`
+    );
+    const cartItems = response.data.cart;
+
+    res.render("cart", { user, cartItems, errorMsg, successMsg });
+  } catch (error) {
+    req.session.errorMsg = "Erro ao carregar o carrinho.";
+    res.redirect("/");
+  }
 });
 
-app.post("/cart/add", (req, res) => {
-  const { email, product, price } = req.body;
+// Rota para adicionar produto ao carrinho
+app.post("/cart/add", async (req, res) => {
+  const { product, price, quantity } = req.body; // Obtém a quantidade
+  const user = req.session.user;
 
-  if (!email || !product || !price) {
-    return res.status(400).json({ success: false, message: "Dados inválidos" });
+  if (!user) {
+    return res.status(401).json({
+      success: false,
+      message: "Faça login para adicionar produtos ao carrinho.",
+    });
   }
 
-  fs.readFile("data/carts.json", "utf8", (err, data) => {
-    let carts = {};
-
-    if (!err) {
-      carts = JSON.parse(data);
-    }
-
-    if (!carts[email]) {
-      carts[email] = [];
-    }
-
-    const existingProduct = carts[email].find(
-      (item) => item.product === product
-    );
-
-    if (existingProduct) {
-      existingProduct.price = price;
-    } else {
-      carts[email].push({ product, price });
-    }
-
-    fs.writeFile("data/carts.json", JSON.stringify(carts, null, 2), (err) => {
-      if (err)
-        return res
-          .status(500)
-          .json({ success: false, message: "Erro ao salvar carrinho" });
-      res.json({ success: true });
+  try {
+    await axios.post("http://localhost:3001/api/cart/add", {
+      email: user.email,
+      product,
+      price,
+      quantity, // Enviar a quantidade para o servidor 2
     });
-  });
+    res
+      .status(200)
+      .json({ success: true, message: "Produto adicionado ao carrinho." }); // Responde com sucesso
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      message: "Erro ao adicionar produto ao carrinho.",
+    });
+  }
 });
 
 app.get("/cart/items", (req, res) => {
@@ -222,24 +359,53 @@ app.get("/cart/items", (req, res) => {
       .json({ success: false, message: "E-mail não fornecido" });
   }
 
-  fs.readFile("data/carts.json", "utf8", (err, data) => {
-    if (err)
-      return res
+  fetch(`http://localhost:3001/api/cart/${email}`)
+    .then((response) => response.json())
+    .then((data) => {
+      if (data.success) {
+        res.json(data); // Retorna os dados recebidos da API para o cliente
+      } else {
+        res
+          .status(500)
+          .json({ success: false, message: "Erro ao carregar o carrinho." });
+      }
+    })
+    .catch((error) => {
+      console.error("Erro ao buscar itens do carrinho:", error);
+      res
         .status(500)
-        .json({ success: false, message: "Erro ao carregar carrinho" });
+        .json({ success: false, message: "Erro ao carregar o carrinho." });
+    });
+});
 
-    const carts = JSON.parse(data);
-    const cart = carts[email] || [];
+app.post("/cart/delete", async (req, res) => {
+  const { product } = req.body;
+  const user = req.session.user;
 
-    res.json({ success: true, cart });
-  });
+  if (!user) {
+    req.session.errorMsg = "Faça login para remover itens do carrinho.";
+    return res.redirect("/login");
+  }
+
+  try {
+    // Fazendo uma requisição à API do Servidor 2 para remover o item do carrinho
+    await axios.post(`http://localhost:3001/api/cart/delete`, {
+      email: user.email,
+      product,
+    });
+    req.session.successMsg = "Produto removido do carrinho.";
+    res.redirect("/cart");
+  } catch (error) {
+    req.session.errorMsg = "Erro ao remover produto do carrinho.";
+    res.redirect("/cart");
+  }
 });
 
 app.get("/logout", (req, res) => {
   req.session.destroy();
-  res.redirect("/login");
+  res.redirect("/");
 });
 
 app.listen(PORT, () => {
-  console.log(`Servidor rodando na porta ${PORT}`);
+  console.log(`Servidor estático rodando na porta ${PORT}`);
 });

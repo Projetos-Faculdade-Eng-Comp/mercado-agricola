@@ -29,6 +29,12 @@ document.addEventListener("DOMContentLoaded", () => {
       "25px",
     ".products-section .products-content .search-bar .add-product-icon": "35px",
     ".footer p": "16px",
+    ".container": "18px",
+    h2: "24px",
+    table: "16px",
+    th: "16px",
+    td: "16px",
+    ".btn-delete": "16px",
   };
 
   function initializeLocalStorage() {

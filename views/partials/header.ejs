@@ -1,0 +1,32 @@
+<header>
+    <nav class="navbar">
+      <div class="logo">
+        <a href="/">
+          <img src="/images/logo.png" alt="Logo" class="logo-img" />
+        </a>
+      </div>
+      <ul class="nav-links">
+        <li><a href="/producers">Explorar</a></li>
+        <li><a href="#">Sobre</a></li>
+        <li><a href="#">Contato</a></li>
+        <% if (user && user.perfil === 'admin') { %>
+          <li><a href="/admin/users">Usuários</a></li>
+        <% } %>
+        <% if (user && user.perfil === 'produtor') { %>
+          <li><a href="/products/myProducts">Meus produtos</a></li>
+        <% } %>
+      </ul>
+      <div class="nav-icons">
+        <a href="#" id="increase-font"><i class="fas fa-plus"></i></a>
+        <a href="#" id="decrease-font"><i class="fas fa-minus"></i></a>
+        <a href="#" id="toggle-style"><i class="fas fa-sync-alt"></i></a>
+        <a href="/cart"><i class="fas fa-shopping-cart"></i></a>
+        <% if (!user) { %>
+          <a href="/login"><i class="fas fa-user"></i></a>
+        <% } else { %>
+          <a href="/logout"><i class="fas fa-sign-out-alt"></i></a>
+        <% } %>
+      </div>
+    </nav>
+  </header>
+  
