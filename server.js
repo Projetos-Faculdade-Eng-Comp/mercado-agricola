@@ -16,7 +16,7 @@ const storage = multer.diskStorage({
   },
   filename: (req, file, cb) => {
     cb(null, Date.now() + path.extname(file.originalname)); // Nome único para o arquivo
-  }
+  },
 });
 const upload = multer({ storage });
 
@@ -46,7 +46,13 @@ app.get("/signUp", (req, res) => {
 app.post("/signUp", async (req, res) => {
   const { primeiroNome, ultimoNome, email, senha, perfil } = req.body;
   try {
-    await axios.post("http://localhost:3001/api/signUp", { primeiroNome, ultimoNome, email, senha, perfil });
+    await axios.post("http://localhost:3001/api/signUp", {
+      primeiroNome,
+      ultimoNome,
+      email,
+      senha,
+      perfil,
+    });
     req.session.successMsg = "Cadastro realizado com sucesso!";
     res.redirect("/signUp");
   } catch (error) {
@@ -64,7 +70,10 @@ app.get("/login", (req, res) => {
 app.post("/login", async (req, res) => {
   const { email, senha } = req.body;
   try {
-    const response = await axios.post("http://localhost:3001/api/login", { email, senha });
+    const response = await axios.post("http://localhost:3001/api/login", {
+      email,
+      senha,
+    });
     req.session.user = response.data; // Salva o usuário na sessão
     res.redirect("/");
   } catch (error) {
@@ -106,7 +115,9 @@ app.delete("/admin/users/:email", async (req, res) => {
   const email = req.params.email;
 
   try {
-    const response = await axios.delete(`http://localhost:3001/api/users/${email}`);
+    const response = await axios.delete(
+      `http://localhost:3001/api/users/${email}`
+    );
     res.status(200).send("Usuário excluído com sucesso!");
   } catch (error) {
     res.status(500).send("Erro ao excluir usuário.");
@@ -115,7 +126,7 @@ app.delete("/admin/users/:email", async (req, res) => {
 
 app.get("/producers", async (req, res) => {
   const user = req.session.user || null;
-  
+
   try {
     const response = await axios.get("http://localhost:3001/api/producers"); // Chamada para a API
     const producers = response.data; // O array de produtores retornado pela API
@@ -136,31 +147,149 @@ app.get("/products", async (req, res) => {
 });
 
 app.get("/products/registerProduct", (req, res) => {
+  const user = req.session.user;
+
+  if (!user || user.perfil !== "produtor") {
+    return res.status(403).send("Acesso negado");
+  }
+
   const successMsg = req.session.successMsg || null;
   req.session.successMsg = null;
   res.render("registerProduct", { successMsg });
 });
 
-// Rota para o cadastro de produto com upload de imagem
-app.post("/products/registerProduct", upload.single("image"), async (req, res) => {
-  const { name, description, price } = req.body;
-  const imageUrl = `/images/${req.file.filename}`; // Caminho da imagem salva
+app.post(
+  "/products/registerProduct",
+  upload.single("image"),
+  async (req, res) => {
+    const user = req.session.user;
+
+    if (!user || user.perfil !== "produtor") {
+      return res.status(403).send("Acesso negado");
+    }
+
+    const { name, description, price } = req.body;
+    const imageUrl = `/images/${req.file.filename}`;
+
+    try {
+      await axios.post("http://localhost:3001/api/products", {
+        name,
+        description,
+        price,
+        imageUrl,
+        producerEmail: user.email,
+      });
+      req.session.successMsg = "Produto cadastrado com sucesso!";
+      res.redirect("/products/registerProduct");
+    } catch (error) {
+      req.session.errorMsg = "Erro ao cadastrar produto.";
+      res.redirect("/products/registerProduct");
+    }
+  }
+);
+
+app.get("/products/myProducts", async (req, res) => {
+  const user = req.session.user;
+
+  if (!user || user.perfil !== "produtor") {
+    return res.status(403).send("Acesso negado");
+  }
 
   try {
-    // Enviando os dados do produto para a API (Componente C)
-    await axios.post("http://localhost:3001/api/products", {
-      name,
-      description,
-      price,
-      imageUrl
+    const response = await axios.post("http://localhost:3001/api/myProducts", {
+      producerEmail: user.email,
     });
-    req.session.successMsg = "Produto cadastrado com sucesso!";
-    res.redirect("/products/registerProduct");
+
+    const products = Array.isArray(response.data) ? response.data : [];
+
+    res.render("myProducts", { user, products });
   } catch (error) {
-    req.session.errorMsg = "Erro ao cadastrar produto.";
-    res.redirect("/products/registerProduct");
+    console.error("Erro ao obter produtos do produtor:", error);
+    res.status(500).send("Erro ao carregar produtos.");
   }
 });
+
+app.post("/products/delete", async (req, res) => {
+  const user = req.session.user;
+  const { productId } = req.body;
+
+  if (!user || user.perfil !== "produtor") {
+    return res.status(403).send("Acesso negado");
+  }
+
+  try {
+    await axios.post("http://localhost:3001/api/products/delete", {
+      productId,
+      producerEmail: user.email,
+    });
+    res.redirect("/products/myProducts");
+  } catch (error) {
+    console.error("Erro ao deletar o produto:", error);
+    res.status(500).send("Erro ao deletar produto.");
+  }
+});
+
+app.get("/products/update/:productId", async (req, res) => {
+  const user = req.session.user;
+  const { productId } = req.params;
+
+  if (!user || user.perfil !== "produtor") {
+    return res.status(403).send("Acesso negado");
+  }
+
+  try {
+    const response = await axios.get(
+      `http://localhost:3001/api/products/${productId}`
+    );
+    const product = response.data;
+
+    const successMsg = req.session.successMsg || null;
+    req.session.successMsg = null;
+
+    res.render("updateProduct", { user, product, successMsg });
+  } catch (error) {
+    console.error("Erro ao carregar produto para atualização:", error);
+    res.status(500).send("Erro ao carregar produto.");
+  }
+});
+
+app.post(
+  "/products/update/:productId",
+  upload.single("image"),
+  async (req, res) => {
+    const user = req.session.user;
+    const { productId } = req.params;
+    const { name, description, price } = req.body;
+
+    if (!user || user.perfil !== "produtor") {
+      return res.status(403).send("Acesso negado");
+    }
+
+    try {
+      let imageUrl = req.body.existingImage;
+      if (req.file) {
+        imageUrl = `/images/${req.file.filename}`;
+      }
+
+      await axios.post(
+        `http://localhost:3001/api/products/update/${productId}`,
+        {
+          name,
+          description,
+          price,
+          imageUrl,
+          producerEmail: user.email,
+        }
+      );
+
+      req.session.successMsg = "Produto atualizado com sucesso!";
+      res.redirect(`/products/update/${productId}`);
+    } catch (error) {
+      console.error("Erro ao atualizar o produto:", error);
+      res.status(500).send("Erro ao atualizar produto.");
+    }
+  }
+);
 
 app.get("/cart", async (req, res) => {
   const user = req.session.user;
@@ -172,13 +301,15 @@ app.get("/cart", async (req, res) => {
   // Obtenha as mensagens de erro e sucesso, se existirem
   const errorMsg = req.session.errorMsg || null;
   const successMsg = req.session.successMsg || null;
-  
+
   // Limpe as mensagens após a leitura
   req.session.errorMsg = null;
   req.session.successMsg = null;
 
   try {
-    const response = await axios.get(`http://localhost:3001/api/cart?email=${user.email}`);
+    const response = await axios.get(
+      `http://localhost:3001/api/cart?email=${user.email}`
+    );
     const cartItems = response.data.cart;
 
     res.render("cart", { user, cartItems, errorMsg, successMsg });
@@ -194,20 +325,28 @@ app.post("/cart/add", async (req, res) => {
   const user = req.session.user;
 
   if (!user) {
-    return res.status(401).json({ success: false, message: "Faça login para adicionar produtos ao carrinho." });
+    return res.status(401).json({
+      success: false,
+      message: "Faça login para adicionar produtos ao carrinho.",
+    });
   }
 
   try {
-    await axios.post("http://localhost:3001/api/cart/add", { 
-      email: user.email, 
-      product, 
-      price, 
-      quantity // Enviar a quantidade para o servidor 2
+    await axios.post("http://localhost:3001/api/cart/add", {
+      email: user.email,
+      product,
+      price,
+      quantity, // Enviar a quantidade para o servidor 2
     });
-    res.status(200).json({ success: true, message: "Produto adicionado ao carrinho." }); // Responde com sucesso
+    res
+      .status(200)
+      .json({ success: true, message: "Produto adicionado ao carrinho." }); // Responde com sucesso
   } catch (error) {
     console.error(error);
-    res.status(500).json({ success: false, message: "Erro ao adicionar produto ao carrinho." });
+    res.status(500).json({
+      success: false,
+      message: "Erro ao adicionar produto ao carrinho.",
+    });
   }
 });
 
@@ -221,17 +360,21 @@ app.get("/cart/items", (req, res) => {
   }
 
   fetch(`http://localhost:3001/api/cart/${email}`)
-    .then(response => response.json())
-    .then(data => {
+    .then((response) => response.json())
+    .then((data) => {
       if (data.success) {
         res.json(data); // Retorna os dados recebidos da API para o cliente
       } else {
-        res.status(500).json({ success: false, message: "Erro ao carregar o carrinho." });
+        res
+          .status(500)
+          .json({ success: false, message: "Erro ao carregar o carrinho." });
       }
     })
-    .catch(error => {
+    .catch((error) => {
       console.error("Erro ao buscar itens do carrinho:", error);
-      res.status(500).json({ success: false, message: "Erro ao carregar o carrinho." });
+      res
+        .status(500)
+        .json({ success: false, message: "Erro ao carregar o carrinho." });
     });
 });
 
@@ -246,7 +389,10 @@ app.post("/cart/delete", async (req, res) => {
 
   try {
     // Fazendo uma requisição à API do Servidor 2 para remover o item do carrinho
-    await axios.post(`http://localhost:3001/api/cart/delete`, { email: user.email, product });
+    await axios.post(`http://localhost:3001/api/cart/delete`, {
+      email: user.email,
+      product,
+    });
     req.session.successMsg = "Produto removido do carrinho.";
     res.redirect("/cart");
   } catch (error) {
@@ -254,7 +400,6 @@ app.post("/cart/delete", async (req, res) => {
     res.redirect("/cart");
   }
 });
-
 
 app.get("/logout", (req, res) => {
   req.session.destroy();

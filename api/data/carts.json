@@ -29,5 +29,17 @@
       "price": "1.20",
       "quantity": 2
     }
+  ],
+  "natanmacedo@gmail.com": [
+    {
+      "product": "Uva",
+      "price": "0.20",
+      "quantity": 2
+    },
+    {
+      "product": "Mamão",
+      "price": "4",
+      "quantity": 2
+    }
   ]
 }

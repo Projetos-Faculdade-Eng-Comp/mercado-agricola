@@ -1,53 +1,92 @@
 <!doctype html>
 <html lang="en">
-  <head>
+<head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Mercado agrícola</title>
-  </head>
-  <body>
-    <h2>Gerenciamento de Usuários</h2>
-    <table>
-      <thead>
-        <tr>
-          <th>Primeiro Nome</th>
-          <th>Último Nome</th>
-          <th>Email</th>
-          <th>Perfil</th>
-          <th>Ação</th>
-        </tr>
-      </thead>
-      <tbody>
-        <% users.forEach((user) => { %>
-            <tr>
-              <td><%= user.primeiroNome %></td>
-              <td><%= user.ultimoNome %></td>
-              <td><%= user.email %></td>
-              <td><%= user.perfil %></td>
-              <td>
-                <button onclick="deleteUser('<%= user.email %>')">Excluir</button>
-              </td>
-            </tr>
-        <% }) %>
-      </tbody>
-    </table>
-
+    <link id="main-styles" rel="stylesheet" href="/css/styles.css" />
+    <link id="page-styles" rel="stylesheet" href="/css/usersList.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+</head>
+<body>
+    <header>
+      <nav class="navbar">
+        <div class="logo">
+          <a href="/">
+            <img src="/images/logo.png" alt="Logo" class="logo-img">
+          </a>
+        </div>
+        <ul class="nav-links">
+          <li><a href="/producers">Explorar</a></li>
+          <li><a href="#">Sobre</a></li>
+          <li><a href="#">Contato</a></li>
+          <% if (user && user.perfil === 'admin') { %>
+            <li><a href="/admin/users">Usuários</a></li>
+          <% } %>
+          <% if (user && user.perfil === 'produtor') { %>
+            <li><a href="/products/myProducts">Meus produtos</a></li>
+          <% } %>
+        </ul>
+        <div class="nav-icons">
+          <a href="#" id="increase-font"><i class="fas fa-plus"></i></a>
+          <a href="#" id="decrease-font"><i class="fas fa-minus"></i></a>
+          <a href="#" id="toggle-style"><i class="fas fa-sync-alt"></i></a>
+          <a href="/cart"><i class="fas fa-shopping-cart"></i></a>
+          <% if (!user) { %>
+            <a href="/login"><i class="fas fa-user"></i></a>
+          <% } else { %>
+            <a href="/logout"><i class="fas fa-sign-out-alt"></i></a>
+          <% } %>
+        </div>
+      </nav>
+    </header>
+    <main>
+      <div class="container">
+          <h2>Gerenciamento de Usuários</h2>
+          <table>
+              <thead>
+                  <tr>
+                      <th>Primeiro Nome</th>
+                      <th>Último Nome</th>
+                      <th>Email</th>
+                      <th>Perfil</th>
+                      <th>Ação</th>
+                  </tr>
+              </thead>
+              <tbody>
+                  <% users.forEach((user) => { %>
+                      <tr>
+                          <td><%= user.primeiroNome %></td>
+                          <td><%= user.ultimoNome %></td>
+                          <td><%= user.email %></td>
+                          <td><%= user.perfil %></td>
+                          <td>
+                              <button class="btn-delete" onclick="deleteUser('<%= user.email %>')">Excluir</button>
+                          </td>
+                      </tr>
+                  <% }) %>
+              </tbody>
+          </table>
+      </div>
+    </main>
+    <script src="js/styleToggle.js"></script>
+    <script src="js/fontSize.js"></script>
     <script>
-      function deleteUser(email) {
-        if (confirm("Tem certeza que deseja excluir este usuário?")) {
-          fetch(`/admin/users/${email}`, {
-            method: "DELETE",
-          })
-            .then((response) => response.text())
-            .then((data) => {
-              alert(data);
-              window.location.reload();
-            })
-            .catch((error) => {
-              alert("Erro ao excluir o usuário.");
-            });
+        function deleteUser(email) {
+            if (confirm("Tem certeza que deseja excluir este usuário?")) {
+                fetch(`/admin/users/${email}`, {
+                    method: "DELETE",
+                })
+                .then((response) => response.text())
+                .then((data) => {
+                    alert(data);
+                    window.location.reload();
+                })
+                .catch((error) => {
+                    alert("Erro ao excluir o usuário.");
+                });
+            }
         }
-      }
     </script>
-  </body>
+</body>
 </html>

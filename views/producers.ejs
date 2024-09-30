@@ -23,6 +23,12 @@
           <li><a href="/producers" class="active">Explorar</a></li>
           <li><a href="#">Sobre</a></li>
           <li><a href="#">Contato</a></li>
+          <% if (user && user.perfil === 'admin') { %>
+            <li><a href="/admin/users">Usuários</a></li>
+          <% } %>
+          <% if (user && user.perfil === 'produtor') { %>
+            <li><a href="/products/myProducts">Meus produtos</a></li>
+          <% } %>
         </ul>
         <div class="nav-icons">
           <a href="#" id="increase-font"><i class="fas fa-plus"></i></a>

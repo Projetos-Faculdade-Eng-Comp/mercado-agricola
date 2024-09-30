@@ -82,20 +82,137 @@ app.get("/api/products", (req, res) => {
 });
 
 app.post("/api/products", (req, res) => {
-  const { name, description, price, imageUrl } = req.body;
+  const { name, description, price, imageUrl, producerEmail } = req.body;
 
   fs.readFile("data/products.json", "utf8", (err, data) => {
     let products = [];
     if (!err) {
       products = JSON.parse(data);
     }
-    products.push({ name, description, price, imageUrl }); // Adicionando a URL da imagem
+
+    const newProduct = {
+      id: Date.now().toString(),
+      name,
+      description,
+      price,
+      imageUrl,
+      producerEmail,
+    };
+
+    products.push(newProduct);
+
     fs.writeFile(
       "data/products.json",
       JSON.stringify(products, null, 2),
       (err) => {
         if (err) return res.status(500).send("Erro ao salvar produto.");
         res.status(200).send("Produto cadastrado com sucesso!");
+      }
+    );
+  });
+});
+
+app.post("/api/myProducts", (req, res) => {
+  const { producerEmail } = req.body;
+
+  fs.readFile("data/products.json", "utf8", (err, data) => {
+    if (err) return res.status(500).send("Erro ao ler produtos.");
+
+    const products = JSON.parse(data).filter(
+      (product) => product.producerEmail === producerEmail
+    );
+
+    res.status(200).json(products.length > 0 ? products : []);
+  });
+});
+
+app.post("/api/products/delete", (req, res) => {
+  const { productId, producerEmail } = req.body;
+
+  fs.readFile("data/products.json", "utf8", (err, data) => {
+    if (err) return res.status(500).send("Erro ao ler produtos.");
+
+    let products = JSON.parse(data);
+
+    const productIndex = products.findIndex(
+      (product) =>
+        product.id === productId && product.producerEmail === producerEmail
+    );
+
+    if (productIndex === -1) {
+      return res
+        .status(404)
+        .send(
+          "Produto não encontrado ou você não tem permissão para removê-lo."
+        );
+    }
+
+    products.splice(productIndex, 1);
+
+    fs.writeFile(
+      "data/products.json",
+      JSON.stringify(products, null, 2),
+      (err) => {
+        if (err) return res.status(500).send("Erro ao salvar produtos.");
+        res.status(200).send("Produto deletado com sucesso.");
+      }
+    );
+  });
+});
+
+app.get("/api/products/:productId", (req, res) => {
+  const { productId } = req.params;
+
+  fs.readFile("data/products.json", "utf8", (err, data) => {
+    if (err) return res.status(500).send("Erro ao carregar produtos.");
+
+    const products = JSON.parse(data);
+    const product = products.find((p) => p.id === productId);
+
+    if (!product) {
+      return res.status(404).send("Produto não encontrado.");
+    }
+
+    res.status(200).json(product);
+  });
+});
+
+app.post("/api/products/update/:productId", (req, res) => {
+  const { productId } = req.params;
+  const { name, description, price, producerEmail, imageUrl } = req.body;
+
+  fs.readFile("data/products.json", "utf8", (err, data) => {
+    if (err) return res.status(500).send("Erro ao ler produtos.");
+
+    let products = JSON.parse(data);
+
+    const productIndex = products.findIndex(
+      (product) =>
+        product.id === productId && product.producerEmail === producerEmail
+    );
+
+    if (productIndex === -1) {
+      return res
+        .status(404)
+        .send(
+          "Produto não encontrado ou você não tem permissão para atualizá-lo."
+        );
+    }
+
+    products[productIndex] = {
+      ...products[productIndex],
+      name,
+      description,
+      price,
+      imageUrl,
+    };
+
+    fs.writeFile(
+      "data/products.json",
+      JSON.stringify(products, null, 2),
+      (err) => {
+        if (err) return res.status(500).send("Erro ao atualizar produto.");
+        res.status(200).send("Produto atualizado com sucesso!");
       }
     );
   });
